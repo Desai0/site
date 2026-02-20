@@ -11,18 +11,19 @@
   --accent3: #4ecdc4;
   --bg: #080810;
   --bg2: #0d0d1a;
-  --bg3: #111128;
-  --surface: rgba(255,255,255,0.04);
-  --surface2: rgba(255,255,255,0.07);
-  --border: rgba(255,255,255,0.08);
+  --bg3: #0f0f1e;
+  --surface: rgba(255,255,255,0.03);
+  --surface2: rgba(255,255,255,0.06);
+  --border: rgba(255,255,255,0.1);
+  --border-sharp: rgba(255,255,255,0.15);
   --text: #e8e8f0;
   --text-muted: rgba(232,232,240,0.55);
   --text-dim: rgba(232,232,240,0.3);
   --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
   --font-sans: 'Inter', sans-serif;
-  --radius: 12px;
-  --radius-lg: 20px;
-  --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  --radius: 0px;
+  --radius-lg: 0px;
+  --transition: 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 html { scroll-behavior: smooth; }
@@ -47,7 +48,7 @@ main { flex: 1; }
 ::selection { background: rgba(162,89,255,0.3); color: #fff; }
 ::-webkit-scrollbar { width: 6px; }
 ::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 0px; }
 
 /* ── CANVAS ── */
 #chromaCanvas {
@@ -88,37 +89,37 @@ a, button, .project-card, .contact-card, .cloud-tag, .ctrl-btn, .feature-chip {
   display: flex;
   align-items: center;
   gap: 2rem;
-  padding: 1.2rem 3rem;
-  background: rgba(8,8,16,0.5);
-  backdrop-filter: blur(24px) saturate(1.8);
+  padding: 1.1rem 3rem;
+  background: rgba(8,8,16,0.95);
   border-bottom: 1px solid var(--border);
   transition: padding var(--transition), background var(--transition);
 }
-.navbar.scrolled { padding: 0.75rem 3rem; background: rgba(8,8,16,0.88); }
+.navbar.scrolled { padding: 0.7rem 3rem; }
 
 .nav-logo {
   font-family: var(--font-mono);
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 700;
+  letter-spacing: -0.02em;
 }
 .nav-logo-bracket { color: var(--accent); }
 
-.nav-links { display: flex; list-style: none; gap: 0.2rem; }
+.nav-links { display: flex; list-style: none; gap: 0; }
 .nav-link {
   font-family: var(--font-mono);
-  font-size: 0.85rem;
+  font-size: 0.8rem;
   color: var(--text-muted);
   text-decoration: none;
-  padding: 0.4rem 0.8rem;
-  border-radius: 6px;
+  padding: 0.4rem 0.9rem;
   transition: var(--transition);
+  border-left: 1px solid transparent;
 }
-.nav-link:hover { color: var(--accent); background: rgba(162,89,255,0.1); }
+.nav-link:hover { color: var(--accent); border-left-color: var(--accent); }
 
 .nav-terminal-hint {
   margin-left: auto;
   font-family: var(--font-mono);
-  font-size: 0.73rem;
+  font-size: 0.72rem;
   color: var(--text-dim);
   display: flex;
   align-items: center;
@@ -127,9 +128,8 @@ a, button, .project-card, .contact-card, .cloud-tag, .ctrl-btn, .feature-chip {
 .nav-terminal-hint kbd {
   background: var(--surface2);
   border: 1px solid var(--border);
-  border-radius: 4px;
-  padding: 1px 6px;
-  font-size: 0.68rem;
+  padding: 1px 5px;
+  font-size: 0.65rem;
   color: var(--text-muted);
 }
 
@@ -163,11 +163,11 @@ a, button, .project-card, .contact-card, .cloud-tag, .ctrl-btn, .feature-chip {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background: rgba(78,205,196,0.1);
-  border: 1px solid rgba(78,205,196,0.25);
-  border-radius: 100px;
-  padding: 0.35rem 1rem;
-  font-size: 0.8rem;
+  background: transparent;
+  border: 1px solid rgba(78,205,196,0.4);
+  border-left: 3px solid var(--accent3);
+  padding: 0.3rem 0.8rem;
+  font-size: 0.75rem;
   font-family: var(--font-mono);
   color: var(--accent3);
   margin-bottom: 1.5rem;
@@ -259,30 +259,35 @@ a, button, .project-card, .contact-card, .cloud-tag, .ctrl-btn, .feature-chip {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  padding: 0.75rem 1.75rem;
-  border-radius: 100px;
+  padding: 0.7rem 1.5rem;
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   text-decoration: none;
   cursor: pointer;
-  border: none;
+  border: 1px solid transparent;
   transition: var(--transition);
-  letter-spacing: 0.01em;
+  font-family: var(--font-mono);
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
 }
 .btn-primary {
   background: var(--accent);
   color: #fff;
-  box-shadow: 0 0 30px rgba(162,89,255,0.35);
-  transition: background var(--transition), transform var(--transition), box-shadow var(--transition);
+  border-color: var(--accent);
 }
-.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 0 50px rgba(162,89,255,0.5); }
+.btn-primary:hover {
+  background: transparent;
+  color: var(--accent);
+  outline: 1px solid var(--accent);
+  outline-offset: 2px;
+}
 .btn-ghost {
-  background: var(--surface2);
-  color: var(--text);
-  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border-sharp);
 }
-.btn-ghost:hover { background: var(--surface); border-color: var(--accent); color: var(--accent); transform: translateY(-2px); }
-.btn-sm { padding: 0.55rem 1.25rem; font-size: 0.82rem; }
+.btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+.btn-sm { padding: 0.45rem 1rem; font-size: 0.78rem; }
 
 .hero-stats { display: flex; align-items: center; gap: 1.5rem; }
 .stat-item { display: flex; flex-direction: column; gap: 0.1rem; }
@@ -303,31 +308,27 @@ a, button, .project-card, .contact-card, .cloud-tag, .ctrl-btn, .feature-chip {
 
 .chroma-badge {
   position: absolute;
-  top: -12px;
-  left: 50%;
-  transform: translateX(-50%);
+  top: -1px;
+  left: 1.5rem;
   background: var(--accent);
   color: #fff;
   font-family: var(--font-mono);
-  font-size: 0.62rem;
-  padding: 3px 10px;
-  border-radius: 100px;
+  font-size: 0.6rem;
+  padding: 2px 8px;
   white-space: nowrap;
-  letter-spacing: 0.05em;
-  box-shadow: 0 0 20px rgba(162,89,255,0.5);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   transition: background var(--transition);
 }
 
 .chroma-player {
-  background: rgba(13,13,26,0.85);
+  background: rgba(13,13,26,0.9);
   border: 1px solid var(--border);
-  border-radius: 24px;
+  border-top: 2px solid var(--accent);
   padding: 1.5rem;
-  backdrop-filter: blur(20px);
   position: relative;
   overflow: hidden;
-  box-shadow: 0 40px 80px rgba(0,0,0,0.4), 0 0 50px rgba(162,89,255,0.2);
-  transition: background 1.5s ease, box-shadow 1.5s ease;
+  transition: background 1.5s ease, border-color 1.5s ease;
 }
 
 .chroma-album { display: flex; justify-content: center; margin-bottom: 1rem; }
@@ -335,7 +336,6 @@ a, button, .project-card, .contact-card, .cloud-tag, .ctrl-btn, .feature-chip {
 
 .album-art {
   width: 100%; height: 100%;
-  border-radius: 16px;
   position: relative;
   overflow: hidden;
   display: flex;
@@ -351,8 +351,7 @@ a, button, .project-card, .contact-card, .cloud-tag, .ctrl-btn, .feature-chip {
 .album-pulse-ring {
   position: absolute;
   inset: -8px;
-  border-radius: 50%;
-  border: 2px solid var(--accent);
+  border: 1px solid var(--accent);
   opacity: 0;
   animation: pulse-ring 2.2s ease-out infinite;
   transition: border-color 1.5s ease;
@@ -385,33 +384,30 @@ a, button, .project-card, .contact-card, .cloud-tag, .ctrl-btn, .feature-chip {
 
 .chroma-controls { display: flex; justify-content: center; gap: 0.75rem; margin-bottom: 0.75rem; }
 .ctrl-btn {
-  background: var(--surface2);
+  background: transparent;
   border: 1px solid var(--border);
-  border-radius: 50%;
-  width: 36px; height: 36px;
+  width: 34px; height: 34px;
   color: var(--text-muted);
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 0.9rem;
+  font-size: 0.85rem;
   transition: var(--transition);
 }
-.ctrl-btn:hover { transform: scale(1.1); }
+.ctrl-btn:hover { border-color: var(--accent); color: var(--accent); }
 .play-btn {
   background: var(--accent);
   border-color: var(--accent);
   color: #fff;
-  box-shadow: 0 0 20px rgba(162,89,255,0.4);
-  transition: background 1.5s ease, border-color 1.5s ease, box-shadow 1.5s ease;
+  transition: background 1.5s ease, border-color 1.5s ease;
 }
 
 .chroma-progress { padding: 0 0.5rem; }
-.progress-bar { height: 4px; background: var(--surface2); border-radius: 2px; overflow: hidden; }
+.progress-bar { height: 2px; background: var(--surface2); overflow: hidden; }
 .progress-fill {
   height: 100%;
   background: var(--accent);
-  border-radius: 2px;
   transition: background 1.5s ease;
   animation: prog-auto 8s linear infinite;
 }
@@ -506,7 +502,7 @@ a, button, .project-card, .contact-card, .cloud-tag, .ctrl-btn, .feature-chip {
 .feature-chip {
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 0px;
   padding: 0.3rem 0.7rem;
   font-size: 0.77rem;
   color: var(--text-muted);
@@ -517,7 +513,7 @@ a, button, .project-card, .contact-card, .cloud-tag, .ctrl-btn, .feature-chip {
 /* ── Mockup Window ── */
 .mockup-window {
   background: #1a1a2e;
-  border-radius: 12px;
+  border-radius: 0px;
   overflow: hidden;
   border: 1px solid var(--border);
   box-shadow: 0 30px 60px rgba(0,0,0,0.5), 0 0 40px rgba(162,89,255,0.08);
@@ -583,7 +579,7 @@ a, button, .project-card, .contact-card, .cloud-tag, .ctrl-btn, .feature-chip {
 .mockup-album-wrap { flex-shrink: 0; }
 .mockup-album {
   width: 80px; height: 80px;
-  border-radius: 8px;
+  border-radius: 0px;
   background: linear-gradient(135deg, var(--accent), var(--accent2));
   transition: background 2s ease;
   box-shadow: 0 10px 30px rgba(0,0,0,0.4);
@@ -591,8 +587,8 @@ a, button, .project-card, .contact-card, .cloud-tag, .ctrl-btn, .feature-chip {
 .mockup-info { flex: 1; }
 .mockup-track { font-weight: 600; font-size: 0.85rem; color: #fff; margin-bottom: 0.2rem; }
 .mockup-artist { font-size: 0.7rem; color: rgba(255,255,255,0.5); font-family: var(--font-mono); margin-bottom: 0.75rem; }
-.mockup-progress { height: 3px; background: rgba(255,255,255,0.1); border-radius: 2px; overflow: hidden; margin-bottom: 0.5rem; }
-.mockup-prog-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: background 2s ease; animation: prog-auto 8s linear infinite; animation-delay: -3s; }
+.mockup-progress { height: 3px; background: rgba(255,255,255,0.1); border-radius: 0px; overflow: hidden; margin-bottom: 0.5rem; }
+.mockup-prog-fill { height: 100%; background: var(--accent); border-radius: 0px; transition: background 2s ease; animation: prog-auto 8s linear infinite; animation-delay: -3s; }
 .mockup-controls { font-size: 0.7rem; color: rgba(255,255,255,0.35); letter-spacing: 0.2em; }
 
 /* ── Projects Grid ── */
@@ -637,7 +633,7 @@ a, button, .project-card, .contact-card, .cloud-tag, .ctrl-btn, .feature-chip {
   color: var(--text-dim);
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 4px;
+  border-radius: 0px;
   padding: 0.15rem 0.5rem;
 }
 .card-footer { display: flex; justify-content: space-between; align-items: center; padding-top: 0.75rem; border-top: 1px solid var(--border); }
@@ -668,7 +664,7 @@ a, button, .project-card, .contact-card, .cloud-tag, .ctrl-btn, .feature-chip {
 .skill-info { display: flex; justify-content: space-between; margin-bottom: 0.3rem; }
 .skill-name { font-size: 0.83rem; font-family: var(--font-mono); }
 .skill-percent { font-size: 0.73rem; color: var(--text-dim); font-family: var(--font-mono); }
-.skill-bar { height: 5px; background: var(--surface2); border-radius: 3px; overflow: hidden; }
+.skill-bar { height: 5px; background: var(--surface2); border-radius: 0px; overflow: hidden; }
 .skill-fill {
   height: 100%;
   background: linear-gradient(90deg, var(--accent) 0%, var(--accent2) 100%);
@@ -696,7 +692,7 @@ a, button, .project-card, .contact-card, .cloud-tag, .ctrl-btn, .feature-chip {
   padding: 0.25rem 0.65rem;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 6px;
+  border-radius: 0px;
   font-family: var(--font-mono);
   color: var(--text-muted);
   cursor: default;
@@ -729,7 +725,7 @@ a, button, .project-card, .contact-card, .cloud-tag, .ctrl-btn, .feature-chip {
   padding: 0.5rem 0.75rem;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 0px;
   font-size: 0.8rem;
   color: var(--text-muted);
   transition: var(--transition);
@@ -788,7 +784,7 @@ a, button, .project-card, .contact-card, .cloud-tag, .ctrl-btn, .feature-chip {
 
 .contact-icon {
   width: 52px; height: 52px;
-  border-radius: 12px;
+  border-radius: 0px;
   display: flex; align-items: center; justify-content: center;
   background: var(--surface);
   border: 1px solid var(--border);
@@ -809,7 +805,7 @@ a, button, .project-card, .contact-card, .cloud-tag, .ctrl-btn, .feature-chip {
    ══════════════════════════════════════════════════════════ */
 .about-grid       { display: grid; grid-template-columns: 2fr 1fr; gap: 3rem; align-items: start; }
 .about-avatar     { width: 100px; height: 100px; border-radius: 50%; border: 2px solid var(--accent); object-fit: cover; display: block; margin: 0 auto 0.75rem; }
-.about-sidebar    { background: var(--bg3); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; }
+.about-sidebar    { background: var(--bg3); border: 1px solid var(--border); border-radius: 0px; padding: 2rem; }
 .about-sidebar-header { text-align: center; margin-bottom: 1.5rem; }
 .about-sidebar-name   { font-family: var(--font-mono); font-size: 0.95rem; color: var(--text); }
 .about-sidebar-sub    { font-size: 0.75rem; color: var(--text-muted); margin-top: 0.25rem; }
@@ -842,14 +838,14 @@ a, button, .project-card, .contact-card, .cloud-tag, .ctrl-btn, .feature-chip {
    CONTACTS PAGE
    ══════════════════════════════════════════════════════════ */
 .contacts-grid    { display: grid; grid-template-columns: 2fr 1fr; gap: 3rem; max-width: 1000px; margin: 0 auto; }
-.contacts-sidebar { background: var(--bg3); border: 1px solid var(--border); border-radius: 12px; padding: 2rem; height: fit-content; }
+.contacts-sidebar { background: var(--bg3); border: 1px solid var(--border); border-radius: 0px; padding: 2rem; height: fit-content; }
 .contacts-h2      { color: var(--text); font-size: 1.3rem; margin-bottom: 1.5rem; }
 .contact-link-item {
   display: flex; align-items: center; gap: 1rem;
   padding: 0.75rem;
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 0px;
   text-decoration: none;
   color: inherit;
   transition: var(--transition);
@@ -877,7 +873,7 @@ a, button, .project-card, .contact-card, .cloud-tag, .ctrl-btn, .feature-chip {
 .form-group select {
   padding: 0.75rem 1rem;
   border: 1px solid var(--border);
-  border-radius: 8px;
+  border-radius: 0px;
   background: var(--surface);
   color: var(--text);
   font-family: var(--font-sans);
@@ -899,7 +895,7 @@ a, button, .project-card, .contact-card, .cloud-tag, .ctrl-btn, .feature-chip {
   flex: 1;
   padding: 0.85rem 2rem;
   border: none;
-  border-radius: 8px;
+  border-radius: 0px;
   font-size: 0.95rem;
   font-weight: 600;
   cursor: pointer;
@@ -916,7 +912,7 @@ a, button, .project-card, .contact-card, .cloud-tag, .ctrl-btn, .feature-chip {
   padding: 1rem;
   background: rgba(78,205,196,0.1);
   border: 1px solid rgba(78,205,196,0.3);
-  border-radius: 8px;
+  border-radius: 0px;
   color: var(--accent3);
   text-align: center;
   margin-bottom: 1.5rem;
@@ -941,7 +937,7 @@ a, button, .project-card, .contact-card, .cloud-tag, .ctrl-btn, .feature-chip {
   display: flex; align-items: center; gap: 0.3rem;
   animation: footer-pulse 3s ease-in-out infinite;
 }
-.footer-hint kbd { background: var(--surface2); border: 1px solid var(--border); border-radius: 3px; padding: 0px 5px; font-size: 0.65rem; color: var(--text-muted); }
+.footer-hint kbd { background: var(--surface2); border: 1px solid var(--border); border-radius: 0px; padding: 0px 5px; font-size: 0.65rem; color: var(--text-muted); }
 @keyframes footer-pulse { 0%, 100% { opacity: 0.5; } 50% { opacity: 1; } }
 .footer-stack { font-family: var(--font-mono); font-size: 0.7rem; color: var(--text-dim); }
 
@@ -968,7 +964,7 @@ a, button, .project-card, .contact-card, .cloud-tag, .ctrl-btn, .feature-chip {
   max-height: 82vh;
   background: #080810;
   border: 1px solid rgba(162,89,255,0.4);
-  border-radius: 14px;
+  border-radius: 0px;
   overflow: hidden;
   display: flex;
   flex-direction: column;
