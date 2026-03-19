@@ -1,372 +1,268 @@
 'use strict';
 
-/* ── CHROMA PALETTES ─────────────────────────────────────── */
-const CHROMA_PALETTES = [
-  { name: 'Violet Night',  from: [162, 89,  255], to: [255, 107, 107], accent: [162, 89, 255] },
-  { name: 'Ocean Drift',   from: [0,   180, 216], to: [72,  202, 228], accent: [0,   180, 216] },
-  { name: 'Sunset Pulse',  from: [255, 107, 107], to: [255, 193, 7  ], accent: [255, 107, 107] },
-  { name: 'Emerald Beat',  from: [78,  205, 196], to: [162, 89,  255], accent: [78,  205, 196] },
-  { name: 'Neon Rush',     from: [255, 0,   128], to: [100, 0,   255], accent: [255, 0,   128] },
-  { name: 'Arctic Storm',  from: [100, 181, 246], to: [48,  63,  159], accent: [100, 181, 246] },
+/* ДАННЫЕ И ПАЛИТРЫ */
+const PALETTES = [
+  { from: '162, 89, 255', to: '255, 107, 107', name: 'Violet Night' },
+  { from: '0, 180, 216', to: '72, 202, 228', name: 'Ocean Drift' },
+  { from: '255, 107, 107', to: '255, 193, 7', name: 'Sunset Pulse' },
 ];
 
-const DEMO_TRACKS = [
-  { name: 'Violet Night',  artist: 'ChromaSync · Demo', palette: 0 },
-  { name: 'Ocean Drift',   artist: 'ChromaSync · Demo', palette: 1 },
-  { name: 'Sunset Pulse',  artist: 'ChromaSync · Demo', palette: 2 },
-  { name: 'Emerald Beat',  artist: 'ChromaSync · Demo', palette: 3 },
-  { name: 'Neon Rush',     artist: 'ChromaSync · Demo', palette: 4 },
-  { name: 'Arctic Storm',  artist: 'ChromaSync · Demo', palette: 5 },
-];
-
-/* ── STATE ───────────────────────────────────────────────── */
-let currentPaletteIdx = 0;
-let targetPalette     = { ...CHROMA_PALETTES[0] };
-let currentPalette    = {
-  from: [...CHROMA_PALETTES[0].from],
-  to:   [...CHROMA_PALETTES[0].to],
-};
-let lerpProgress = 1;
-let currentTrackIdx = 0;
+let currentPaletteIndex = 0;
 let isPlaying = true;
-let trackInterval = null;
+let trackTimer = null;
 
-/* ── CANVAS ──────────────────────────────────────────────── */
+/* ФОНОВЫЙ КАНВАС */
 const canvas = document.getElementById('chromaCanvas');
-const ctx    = canvas.getContext('2d');
-let canvasW, canvasH, time = 0;
+const ctx = canvas ? canvas.getContext('2d') : null;
 let particles = [];
+let time = 0;
 
 function resizeCanvas() {
-  canvasW = canvas.width  = window.innerWidth;
-  canvasH = canvas.height = window.innerHeight;
+  if (!canvas) return;
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
 }
 
-/* ── MATH UTILS ──────────────────────────────────────────── */
-const lerp = (a, b, t) => a + (b - a) * t;
-const lerpCol = (a, b, t) => a.map((v, i) => Math.round(lerp(v, b[i], t)));
-const rgb = (c, a = 1) => `rgba(${c[0]},${c[1]},${c[2]},${a})`;
-
-/* ── PARTICLES ───────────────────────────────────────────── */
-class Particle {
-  constructor() { this.reset(true); }
-  reset(init = false) {
-    // Спавн в случайной точке по всему экрану
-    this.x = Math.random() * canvasW;
-    this.y = Math.random() * canvasH;
-    this.r = Math.random() * 2.5 + 0.5;
-    // Медленный дрейф в случайном направлении
-    this.vx = (Math.random() - 0.5) * 0.3;
-    this.vy = (Math.random() - 0.5) * 0.3;
-    // При инициализации — разброс по фазе, иначе все мигают синхронно
-    this.life = init ? Math.random() : 0;
-    this.lifeStep = 2 / (Math.random() * 180 + 60);
-    this.opacity = Math.random() * 0.6 + 0.15;
-    this.palIdx = Math.floor(Math.random() * CHROMA_PALETTES.length);
-  }
-  update() {
-    this.x += this.vx;
-    this.y += this.vy;
-    this.life += this.lifeStep;
-    // Умерла — респавн в новой случайной точке
-    if (this.life >= 1) this.reset();
-  }
-  draw() {
-    const alpha = this.opacity * Math.sin(this.life * Math.PI);
-    ctx.beginPath();
-    ctx.arc(this.x, this.y, this.r, 0, Math.PI * 2);
-    ctx.fillStyle = rgb(CHROMA_PALETTES[this.palIdx].from, alpha);
-    ctx.fill();
-  }
-}
-
+// Создаем простые частицы-кружочки
 function initParticles() {
   particles = [];
-  const n = Math.min(120, Math.floor(canvasW * canvasH / 9000));
-  for (let i = 0; i < n; i++) particles.push(new Particle());
-}
+  if (!canvas) return;
+  let count = window.innerWidth > 800 ? 50 : 20;
 
-/* ── OFFSCREEN GRID (рисуется один раз при старте/ресайзе) ── */
-let gridCanvas = null;
-function buildGrid() {
-  gridCanvas = document.createElement('canvas');
-  gridCanvas.width  = canvasW;
-  gridCanvas.height = canvasH;
-  const gc = gridCanvas.getContext('2d');
-  gc.strokeStyle = 'rgba(162,89,255,0.025)';
-  gc.lineWidth = 1;
-  const gs = 80;
-  gc.beginPath();
-  for (let x = 0; x <= canvasW; x += gs) { gc.moveTo(x, 0); gc.lineTo(x, canvasH); }
-  for (let y = 0; y <= canvasH; y += gs) { gc.moveTo(0, y); gc.lineTo(canvasW, y); }
-  gc.stroke();
-}
-
-/* ── DRAW FRAME ──────────────────────────────────────────── */
-function drawFrame() {
-  time += 0.005;
-
-  // Lerp palette
-  if (lerpProgress < 1) {
-    lerpProgress = Math.min(1, lerpProgress + 0.007);
-    currentPalette.from = lerpCol(currentPalette.from, targetPalette.from, lerpProgress);
-    currentPalette.to   = lerpCol(currentPalette.to,   targetPalette.to,   lerpProgress);
-  }
-
-  ctx.clearRect(0, 0, canvasW, canvasH);
-
-  // Background blobs
-  const maxDim = Math.max(canvasW, canvasH);
-  const blobs = [
-    { x: 0.15 + Math.sin(time * 0.7) * 0.05, y: 0.3  + Math.cos(time * 0.5) * 0.06, r: 0.4,  c: currentPalette.from, a: 0.13 },
-    { x: 0.85 + Math.cos(time * 0.6) * 0.04, y: 0.75 + Math.sin(time * 0.8) * 0.04, r: 0.35, c: currentPalette.to,   a: 0.10 },
-    { x: 0.5  + Math.sin(time * 0.4) * 0.08, y: 0.5  + Math.cos(time * 0.4) * 0.06, r: 0.28, c: currentPalette.from, a: 0.05 },
-  ];
-  for (const b of blobs) {
-    const gx = b.x * canvasW, gy = b.y * canvasH;
-    const gr = b.r * maxDim;
-    const g = ctx.createRadialGradient(gx, gy, 0, gx, gy, gr);
-    g.addColorStop(0, rgb(b.c, b.a));
-    g.addColorStop(1, 'transparent');
-    ctx.fillStyle = g;
-    ctx.fillRect(0, 0, canvasW, canvasH);
-  }
-
-  // Grid из offscreen canvas
-  if (gridCanvas) ctx.drawImage(gridCanvas, 0, 0);
-
-  // Particles
-  particles.forEach(p => { p.update(); p.draw(); });
-
-  // Scan line
-  const sy = (time * 28) % canvasH;
-  const sg = ctx.createLinearGradient(0, sy - 2, 0, sy + 2);
-  sg.addColorStop(0, 'transparent');
-  sg.addColorStop(0.5, rgb(currentPalette.from, 0.045));
-  sg.addColorStop(1, 'transparent');
-  ctx.fillStyle = sg;
-  ctx.fillRect(0, sy - 2, canvasW, 4);
-}
-
-/* ── PALETTE SWITCH ──────────────────────────────────────── */
-function switchPalette(idx) {
-  currentPaletteIdx = ((idx % CHROMA_PALETTES.length) + CHROMA_PALETTES.length) % CHROMA_PALETTES.length;
-  targetPalette = CHROMA_PALETTES[currentPaletteIdx];
-  lerpProgress = 0;
-
-  const [r, g, b] = targetPalette.accent;
-  document.documentElement.style.setProperty('--accent', `rgb(${r},${g},${b})`);
-
-  updateChromaDemo();
-  updateMockup();
-  updateCursorColor();
-}
-
-/* ── CHROMA DEMO PLAYER ──────────────────────────────────── */
-function updateChromaDemo() {
-  const pal   = CHROMA_PALETTES[currentPaletteIdx];
-  const track = DEMO_TRACKS[currentTrackIdx % DEMO_TRACKS.length];
-  const from  = `rgb(${pal.from})`;
-  const to    = `rgb(${pal.to})`;
-  const fromA = `rgba(${pal.from},0.35)`;
-
-  const grad = document.getElementById('albumGradient');
-  if (grad) grad.style.background = `linear-gradient(135deg, ${from} 0%, ${to} 100%)`;
-
-  document.querySelectorAll('.album-pulse-ring').forEach(r => r.style.borderColor = from);
-
-  const player = document.querySelector('.chroma-player');
-  if (player) {
-    player.style.background = `linear-gradient(135deg, ${fromA} 0%, rgba(8,8,16,0.85) 60%)`;
-    player.style.boxShadow   = `0 40px 80px rgba(0,0,0,0.4), 0 0 60px rgba(${pal.from},0.25)`;
-  }
-
-  const pf = document.querySelector('.progress-fill');
-  if (pf) pf.style.background = from;
-
-  const pb = document.getElementById('playBtn');
-  if (pb) { pb.style.background = from; pb.style.borderColor = from; pb.style.boxShadow = `0 0 22px rgba(${pal.from},0.5)`; }
-
-  const dt = document.getElementById('demoTrack');   if (dt) dt.textContent = track.name;
-  const da = document.getElementById('demoArtist');  if (da) da.textContent = track.artist;
-}
-
-function updateMockup() {
-  const pal  = CHROMA_PALETTES[currentPaletteIdx];
-  const from = `rgb(${pal.from})`;
-  // Accent bar под скриншотом меняет цвет вместе с палитрой
-  const mp = document.getElementById('mockupProg');
-  if (mp) mp.style.background = from;
-}
-
-/* ── TRACK CONTROLS ──────────────────────────────────────── */
-function nextTrack() {
-  currentTrackIdx = (currentTrackIdx + 1) % DEMO_TRACKS.length;
-  switchPalette(DEMO_TRACKS[currentTrackIdx].palette);
-}
-function prevTrack() {
-  currentTrackIdx = (currentTrackIdx - 1 + DEMO_TRACKS.length) % DEMO_TRACKS.length;
-  switchPalette(DEMO_TRACKS[currentTrackIdx].palette);
-}
-function autoPlay() {
-  clearInterval(trackInterval);
-  if (isPlaying) trackInterval = setInterval(nextTrack, 8000);
-}
-
-/* ── CURSOR ──────────────────────────────────────────────── */
-function updateCursorColor() {
-  const pal = CHROMA_PALETTES[currentPaletteIdx];
-  const [r, g, b] = pal.from;
-  const normal = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="6" fill="rgba(${r},${g},${b},0.8)"/><circle cx="12" cy="12" r="6" fill="none" stroke="rgba(${r},${g},${b},0.4)" stroke-width="1" opacity="0.6"/></svg>') 12 12, auto`;
-  const hover  = `url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32"><circle cx="16" cy="16" r="10" fill="rgba(${r},${g},${b},0.6)"/><circle cx="16" cy="16" r="10" fill="none" stroke="rgba(${r},${g},${b},0.3)" stroke-width="1.5" opacity="0.7"/></svg>') 16 16, pointer`;
-  document.body.style.cursor = normal;
-  document.querySelectorAll('a, button, .project-card, .contact-card, .cloud-tag, .ctrl-btn, .feature-chip').forEach(el => {
-    el.style.cursor = hover;
-  });
-}
-
-/* ── TYPING EFFECT ───────────────────────────────────────── */
-const PHRASES = [
-  'System programmer',
-  'AI & neural nets enthusiast',
-  'Linux & Android hacker',
-  'UI customization fanatic',
-  'Self-hosted VPN wizard',
-  'ChromaSync creator',
-];
-let phraseIdx = 0, charIdx = 0, typing = true;
-const typedEl = document.getElementById('typedText');
-
-function typeEffect() {
-  if (!typedEl) return;
-  const phrase = PHRASES[phraseIdx];
-  if (typing) {
-    typedEl.textContent = phrase.slice(0, ++charIdx);
-    if (charIdx >= phrase.length) { typing = false; setTimeout(typeEffect, 2000); return; }
-    setTimeout(typeEffect, 55);
-  } else {
-    typedEl.textContent = phrase.slice(0, --charIdx);
-    if (charIdx <= 0) {
-      typing = true;
-      phraseIdx = (phraseIdx + 1) % PHRASES.length;
-      setTimeout(typeEffect, 400);
-      return;
-    }
-    setTimeout(typeEffect, 28);
-  }
-}
-
-/* ── NAVBAR SCROLL ───────────────────────────────────────── */
-const navbar = document.getElementById('navbar');
-window.addEventListener('scroll', () => {
-  navbar?.classList.toggle('scrolled', window.scrollY > 50);
-}, { passive: true });
-
-/* ── SCROLL REVEAL ───────────────────────────────────────── */
-const revealObs = new IntersectionObserver((entries) => {
-  entries.forEach((entry, i) => {
-    if (entry.isIntersecting) {
-      setTimeout(() => entry.target.classList.add('visible'), i * 80);
-      revealObs.unobserve(entry.target);
-    }
-  });
-}, { threshold: 0.08, rootMargin: '0px 0px -40px 0px' });
-
-document.querySelectorAll('.project-card, .featured-project, .skill-category, .contact-card, .about-layout, .tech-tags-cloud, .principles-card').forEach(el => {
-  el.classList.add('reveal');
-  revealObs.observe(el);
-});
-
-/* ── SKILL BARS ──────────────────────────────────────────── */
-const skillObs = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
-    if (entry.isIntersecting) {
-      entry.target.querySelectorAll('.skill-fill').forEach((f, i) => {
-        setTimeout(() => f.classList.add('animated'), 200 + i * 80);
-      });
-      skillObs.unobserve(entry.target);
-    }
-  });
-}, { threshold: 0.2 });
-document.querySelectorAll('.skill-category').forEach(el => skillObs.observe(el));
-
-/* ── 3D TILT ─────────────────────────────────────────────── */
-document.querySelectorAll('[data-tilt]').forEach(card => {
-  card.addEventListener('mousemove', e => {
-    const r  = card.getBoundingClientRect();
-    const rx = ((e.clientY - r.top  - r.height / 2) / r.height) * -10;
-    const ry = ((e.clientX - r.left - r.width  / 2) / r.width)  *  10;
-    card.style.transform = `perspective(600px) rotateX(${rx}deg) rotateY(${ry}deg) translateY(-4px)`;
-  });
-  card.addEventListener('mouseleave', () => { card.style.transform = ''; });
-});
-
-/* ── SMOOTH ANCHORS ──────────────────────────────────────── */
-document.querySelectorAll('a[href^="#"]').forEach(a => {
-  a.addEventListener('click', e => {
-    const t = document.querySelector(a.getAttribute('href'));
-    if (t) { e.preventDefault(); t.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
-  });
-});
-
-/* ── PARALLAX ON HERO VISUAL (throttled via rAF) ─────────── */
-const heroVisual = document.querySelector('.hero-visual');
-let parallaxPending = false;
-let parallaxX = 0, parallaxY = 0;
-document.addEventListener('mousemove', e => {
-  if (!heroVisual) return;
-  parallaxX = (e.clientX / window.innerWidth  - 0.5);
-  parallaxY = (e.clientY / window.innerHeight - 0.5);
-  if (!parallaxPending) {
-    parallaxPending = true;
-    requestAnimationFrame(() => {
-      heroVisual.style.transform = `translate(${parallaxX * 14}px, ${parallaxY * 9}px)`;
-      parallaxPending = false;
+  for (let i = 0; i < count; i++) {
+    particles.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      radius: Math.random() * 3 + 1,
+      speedX: (Math.random() - 0.5) * 0.5,
+      speedY: (Math.random() - 0.5) * 0.5,
+      opacity: Math.random() * 0.5 + 0.1
     });
   }
-}, { passive: true });
-
-/* ── MAIN LOOP (30 FPS cap — фон не нуждается в 60fps) ────── */
-let loopActive = true;
-let lastFrameTime = 0;
-const FRAME_INTERVAL = 1000 / 30;
-
-function mainLoop(ts) {
-  requestAnimationFrame(mainLoop);
-  if (!loopActive) return;
-  if (ts - lastFrameTime < FRAME_INTERVAL) return;
-  lastFrameTime = ts;
-  drawFrame();
 }
 
-// Стоп canvas когда вкладка скрыта
-document.addEventListener('visibilitychange', () => {
-  loopActive = !document.hidden;
-});
+// Отрисовка каждого кадра
+function drawFrame() {
+  if (!ctx || !canvas) return;
 
-/* ── INIT ────────────────────────────────────────────────── */
-function init() {
+  ctx.fillStyle = 'rgba(8, 8, 16, 1)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  let currentColors = PALETTES[currentPaletteIndex];
+
+  // большие размытые пятна
+  let gradient1 = ctx.createRadialGradient(canvas.width * 0.2, canvas.height * 0.3, 0, canvas.width * 0.2, canvas.height * 0.3, 400);
+  gradient1.addColorStop(0, `rgba(${currentColors.from}, 0.15)`);
+  gradient1.addColorStop(1, 'transparent');
+  ctx.fillStyle = gradient1;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  let gradient2 = ctx.createRadialGradient(canvas.width * 0.8, canvas.height * 0.7, 0, canvas.width * 0.8, canvas.height * 0.7, 400);
+  gradient2.addColorStop(0, `rgba(${currentColors.to}, 0.15)`);
+  gradient2.addColorStop(1, 'transparent');
+  ctx.fillStyle = gradient2;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // частицы
+  for (let i = 0; i < particles.length; i++) {
+    let p = particles[i];
+    p.x += p.speedX;
+    p.y += p.speedY;
+
+    if (p.x < 0) p.x = canvas.width;
+    if (p.x > canvas.width) p.x = 0;
+    if (p.y < 0) p.y = canvas.height;
+    if (p.y > canvas.height) p.y = 0;
+
+    ctx.beginPath();
+    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+    ctx.fillStyle = `rgba(${currentColors.from}, ${p.opacity})`;
+    ctx.fill();
+  }
+
+  requestAnimationFrame(drawFrame);
+}
+
+
+/* ЛОГИКА СМЕНЫ ЦВЕТОВ И ПЛЕЕРА */
+function updateColors() {
+  let colors = PALETTES[currentPaletteIndex];
+
+  // главные CSS-переменные
+  document.documentElement.style.setProperty('--accent', `rgb(${colors.from})`);
+  document.documentElement.style.setProperty('--accent2', `rgb(${colors.to})`);
+
+  // плеер-превью
+  const grad = document.getElementById('albumGradient');
+  if (grad) grad.style.background = `linear-gradient(135deg, rgb(${colors.from}) 0%, rgb(${colors.to}) 100%)`;
+
+  const playBtn = document.getElementById('playBtn');
+  if (playBtn) {
+    playBtn.style.background = `rgb(${colors.from})`;
+    playBtn.style.borderColor = `rgb(${colors.from})`;
+  }
+}
+
+function nextTrack() {
+  currentPaletteIndex = (currentPaletteIndex + 1) % PALETTES.length;
+  updateColors();
+}
+
+function prevTrack() {
+  currentPaletteIndex = (currentPaletteIndex - 1 + PALETTES.length) % PALETTES.length;
+  updateColors();
+}
+
+function togglePlay() {
+  isPlaying = !isPlaying;
+  let playBtn = document.getElementById('playBtn');
+  if (playBtn) {
+    playBtn.textContent = isPlaying ? '▶' : '⏸';
+  }
+
+  clearInterval(trackTimer);
+  if (isPlaying) {
+    trackTimer = setInterval(nextTrack, 5000);
+  }
+}
+
+
+/* АНИМАЦИЯ ПЕЧАТАЮЩЕГОСЯ ТЕКСТА */
+const phrases = ['System programmer', 'AI enthusiast', 'C++ & JS developer', 'ChromaSync creator'];
+let phraseIndex = 0;
+let charIndex = 0;
+let isDeleting = false;
+
+function typeWriter() {
+  const typedEl = document.getElementById('typedText');
+  if (!typedEl) return;
+
+  let currentPhrase = phrases[phraseIndex];
+
+  if (isDeleting) {
+    // Удаляем по одному символу
+    typedEl.textContent = currentPhrase.substring(0, charIndex - 1);
+    charIndex--;
+  } else {
+    // Печатаем по одному символу
+    typedEl.textContent = currentPhrase.substring(0, charIndex + 1);
+    charIndex++;
+  }
+
+  // Логика переключения состояний
+  let delay = 100;
+
+  if (!isDeleting && charIndex === currentPhrase.length) {
+    delay = 2000;
+    isDeleting = true;
+  } else if (isDeleting && charIndex === 0) {
+    isDeleting = false;
+    phraseIndex = (phraseIndex + 1) % phrases.length;
+    delay = 500;
+  } else if (isDeleting) {
+    // Скорость стирания
+    delay = 50;
+  }
+
+  setTimeout(typeWriter, delay);
+}
+
+
+/* ФИЛЬТРАЦИЯ ПРОЕКТОВ */
+function initProjectFilter() {
+  const filterButtons = document.querySelectorAll('.filter-btn');
+  const projectCards = document.querySelectorAll('.project-card');
+
+  // Перебираем все кнопки фильтра
+  for (let i = 0; i < filterButtons.length; i++) {
+    let btn = filterButtons[i];
+
+    btn.addEventListener('click', function () {
+      // Убираем класс 'active' у всех кнопок и даем только нажатой
+      for (let j = 0; j < filterButtons.length; j++) {
+        filterButtons[j].classList.remove('active');
+      }
+      btn.classList.add('active');
+
+      // Получаем категорию, которую нужно показать
+      let category = btn.getAttribute('data-filter');
+
+      // Проходим по всем карточкам проектов
+      for (let k = 0; k < projectCards.length; k++) {
+        let card = projectCards[k];
+        let cardCategory = card.getAttribute('data-category');
+
+        if (category === 'all' || category === cardCategory) {
+          card.style.display = 'block';
+        } else {
+          card.style.display = 'none';
+        }
+      }
+    });
+  }
+}
+
+
+/* ПОЯВЛЕНИЕ ЭЛЕМЕНТОВ ПРИ ПРОКРУТКЕ */
+function initScrollReveal() {
+  const elementsToReveal = document.querySelectorAll('.reveal');
+
+  // Функция, которая проверяет, виден ли элемент на экране
+  function checkReveal() {
+    let windowHeight = window.innerHeight;
+
+    for (let i = 0; i < elementsToReveal.length; i++) {
+      let element = elementsToReveal[i];
+      // Получаем позицию элемента относительно окна
+      let positionFromTop = element.getBoundingClientRect().top;
+
+      // Если элемент дошел до видимой зоны - добавляем класс visible
+      if (positionFromTop - windowHeight <= -100) {
+        element.classList.add('visible');
+      }
+    }
+  }
+
+  // Проверяем элементы при прокрутке и один раз при загрузке
+  window.addEventListener('scroll', checkReveal);
+  checkReveal();
+}
+
+
+/* ИНИЦИАЛИЗАЦИЯ */
+document.addEventListener('DOMContentLoaded', function () {
+  // 1. Настраиваем канвас
   resizeCanvas();
-  buildGrid();
+  window.addEventListener('resize', resizeCanvas);
   initParticles();
-  window.addEventListener('resize', () => { resizeCanvas(); buildGrid(); initParticles(); });
+  if (canvas) {
+    requestAnimationFrame(drawFrame);
+  }
 
-  document.getElementById('nextBtn')?.addEventListener('click', nextTrack);
-  document.getElementById('prevBtn')?.addEventListener('click', prevTrack);
-  document.getElementById('playBtn')?.addEventListener('click', () => {
-    isPlaying = !isPlaying;
-    document.getElementById('playBtn').textContent = isPlaying ? '▶' : '⏸';
-    autoPlay();
+  // 2. Настраиваем плеер
+  let btnNext = document.getElementById('nextBtn');
+  let btnPrev = document.getElementById('prevBtn');
+  let btnPlay = document.getElementById('playBtn');
+
+  if (btnNext) btnNext.addEventListener('click', nextTrack);
+  if (btnPrev) btnPrev.addEventListener('click', prevTrack);
+  if (btnPlay) btnPlay.addEventListener('click', togglePlay);
+
+  updateColors();
+  trackTimer = setInterval(nextTrack, 5000);
+
+  // текст и другие скрипты
+  typeWriter();
+  initProjectFilter();
+  initScrollReveal();
+
+  // затемнение меню при скролле
+  const navbar = document.getElementById('navbar');
+  window.addEventListener('scroll', function () {
+    if (window.scrollY > 50) {
+      navbar.classList.add('scrolled');
+    } else {
+      navbar.classList.remove('scrolled');
+    }
   });
-
-  switchPalette(0);
-  autoPlay();
-  typeEffect();
-  mainLoop(0);
-}
-
-if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', init);
-} else {
-  init();
-}
+});

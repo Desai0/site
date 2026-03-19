@@ -1,0 +1,363 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Desaichk — Blog</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+    <style>
+        /* Blog specific styles */
+        .reading-progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--surface2);
+            z-index: 1000;
+            pointer-events: none;
+        }
+
+        .reading-progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, var(--accent), var(--accent2));
+            width: 0%;
+            transition: width 0.1s ease-out;
+        }
+
+        .blog-section {
+            padding-top: 100px;
+            /* space for navbar */
+        }
+
+        .article-container {
+            max-width: 800px;
+            /* narrower for better readability */
+            margin: 0 auto;
+            padding: 2rem;
+            background: var(--bg3);
+            border: 1px solid var(--border);
+            border-radius: var(--radius-lg);
+        }
+
+        .article-header {
+            margin-bottom: 2rem;
+            border-bottom: 1px solid var(--border);
+            padding-bottom: 1.5rem;
+        }
+
+        .article-title {
+            font-size: clamp(1.8rem, 4vw, 2.5rem);
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            color: #fff;
+        }
+
+        .article-meta {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--text-dim);
+        }
+
+        .article-content {
+            line-height: 1.8;
+            color: var(--text-muted);
+            font-size: 1.1rem;
+        }
+
+        .article-content p {
+            margin-bottom: 1.5rem;
+        }
+
+        .article-content h2 {
+            margin-top: 2.5rem;
+            margin-bottom: 1rem;
+            color: #fff;
+        }
+
+        .comments-section {
+            max-width: 800px;
+            margin: 4rem auto 0;
+            padding: 0 2rem;
+        }
+
+        .comments-title {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+        }
+
+        .comment-form {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            margin-bottom: 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .form-group label {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .form-input {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            color: var(--text);
+            padding: 0.75rem 1rem;
+            font-family: var(--font-sans);
+            font-size: 1rem;
+            border-radius: var(--radius-lg);
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .form-input:focus {
+            border-color: var(--accent);
+            background: rgba(162, 89, 255, 0.05);
+        }
+
+        .error-msg {
+            color: #ff5f56;
+            font-size: 0.75rem;
+            font-family: var(--font-mono);
+            display: none;
+        }
+
+        .comments-list {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        .comment-item {
+            background: var(--bg2);
+            border: 1px solid var(--border);
+            padding: 1.5rem;
+            border-radius: var(--radius-lg);
+            animation: fade-in 0.5s ease-out;
+        }
+
+        .comment-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .comment-author {
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .comment-date {
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--text-dim);
+        }
+
+        .comment-text {
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        .comment-footer {
+            margin-top: 1rem;
+            display: flex;
+            gap: 1rem;
+        }
+
+        .like-btn {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            transition: var(--transition);
+        }
+
+        .like-btn:hover {
+            color: var(--accent2);
+        }
+
+        @keyframes fade-in {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Scroll to Top Button */
+        .scroll-to-top {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 45px;
+            height: 45px;
+            background: var(--accent);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(20px);
+            transition: var(--transition);
+            z-index: 90;
+            box-shadow: 0 4px 15px rgba(162, 89, 255, 0.4);
+        }
+
+        .scroll-to-top.visible {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .scroll-to-top:hover {
+            background: #8b4ddb;
+            transform: translateY(-5px);
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Reading Progress -->
+    <div class="reading-progress-container">
+        <div class="reading-progress-bar" id="progressBar"></div>
+    </div>
+
+    <canvas id="chromaCanvas"></canvas>
+    <div class="noise-overlay"></div>
+    <div class="cursor-glow" id="cursorGlow"></div>
+
+    <!-- NAVIGATION -->
+    <nav class="navbar" id="navbar">
+        <div class="nav-logo">
+            <span class="nav-logo-bracket">[</span>
+            <span class="nav-logo-name">Desaichk</span>
+            <span class="nav-logo-bracket">]</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="index.html" class="nav-link">main</a></li>
+            <li><a href="blog.html" class="nav-link"
+                    style="color:var(--accent);border-left-color:var(--accent);">blog</a></li>
+            <li><a href="about.html" class="nav-link">about</a></li>
+            <li><a href="contacts.html" class="nav-link">contacts</a></li>
+            <li><a href="index.html#projects" class="nav-link">projects</a></li>
+        </ul>
+    </nav>
+
+    <!-- BLOG ARTICLE SECTION -->
+    <section class="section blog-section">
+        <div class="container">
+            <div class="article-container reveal">
+                <div class="article-header">
+                    <span class="section-tag">// article</span>
+                    <h1 class="article-title">Как я создал ChromaSync для Яндекс Музыки</h1>
+                    <div class="article-meta">
+                        <span>📅 Опубликовано: 15 Марта 2026</span>
+                        <span style="margin: 0 10px;">·</span>
+                        <span>⏱️ Чтение: 5 минут</span>
+                    </div>
+                </div>
+                <div class="article-content">
+                    <p>Давно хотел кастомизировать интерфейс Яндекс Музыки. Идея была простой: сделать так, чтобы тема
+                        плеера подстраивалась под обложку текущего трека, создавая «эффект хамелеона». Но реализация
+                        оказалась куда интереснее.</p>
+                    <h2>Извлечение палитры</h2>
+                    <p>Сначала нужно было научиться получать цвета из обложки. Использовал <code>canvas</code> для
+                        отрисовки картинки и взял алгоритмы кластеризации (K-means), чтобы найти доминирующие оттенки.
+                        Но на практике это работало медленно, поэтому я оптимизировал процесс, используя быстрые выборки
+                        пикселей из разных участков.</p>
+                    <p>В итоге я получал 3 цвета: основной фон, градиентный переход и акцентный цвет для кнопок.</p>
+                    <h2>Инъекция стилей в Electron</h2>
+                    <p>Дальше самое сложное: Яндекс Музыка — это по сути веб-приложение. Чтобы изменить его внешний вид,
+                        мне пришлось копаться в DOM. Я написал скрипт, использующий <code>MutationObserver</code>,
+                        который следит за сменой треков и обновляет CSS-переменные (CSS variables) на лету.</p>
+                    <p>Добавил плавные переходы через <code>transition: background 1.5s ease</code>. Результат выглядел
+                        впечатляюще — интерфейс буквально «дышал» вместе с музыкой!</p>
+                    <h2>Пульсация на биты и Zen Mode</h2>
+                    <p>Мне не хотелось останавливаться на простых цветах. Я решил добавить эффект пульсации под музыку.
+                        Написал обработчик, который анализировал аудиопоток (Web Audio API) и извлекал RMS для
+                        синхронизации с анимацией. Режимы RAW и OSU позволили настроить агрессивность пульсации.</p>
+                    <p>А Zen Mode просто убирал весь лишний интерфейс, оставляя только красивую обложку и градиенты.
+                        Идеально для концентрации.</p>
+                    <p>Этот проект многому меня научил. Системное программирование, работа с DOM, парсинг аудио... Если
+                        вам интересно, код доступен на моем GitHub!</p>
+                </div>
+            </div>
+
+            <!-- COMMENTS -->
+            <div class="comments-section reveal" id="comments">
+                <h3 class="comments-title">Комментарии (<span id="commentsCount">0</span>)</h3>
+
+                <form class="comment-form" id="commentForm">
+                    <div class="form-group">
+                        <label for="commentName">Как вас зовут?</label>
+                        <input type="text" id="commentName" class="form-input" placeholder="Например: Иван" />
+                        <span class="error-msg" id="nameError">Имя должно содержать минимум 2 символа</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="commentText">Ваш комментарий</label>
+                        <textarea id="commentText" class="form-input" rows="4"
+                            placeholder="Что думаете о статье?"></textarea>
+                        <span class="error-msg" id="textError">Комментарий не должен быть пустым</span>
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="align-self: flex-start;">Отправить</button>
+                </form>
+
+                <div class="comments-list" id="commentsList">
+                    <!-- Comments generated by JS -->
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Scroll To Top -->
+    <button class="scroll-to-top" id="scrollTopBtn" title="Наверх">↑</button>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <span class="footer-name">Desaichk © 2026</span>
+                <span class="footer-stack">Built with vanilla JS + love</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Basic scripts like cursor and navbar scroll from script.js -->
+    <script src="script.js"></script>
+    <script src="blog.js"></script>
+</body>
+
+</html>
