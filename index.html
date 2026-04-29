@@ -2,637 +2,107 @@
 <html lang="ru">
 
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Desaichk — Developer Portfolio</title>
-  <meta name="description"
-    content="Портфолио Desaichk — системный программист из Санкт-Петербурга. C++, AI/ML, ChromaSync, Linux." />
-  <meta name="keywords" content="Desaichk, portfolio, C++, developer, ChromaSync, AI, ML, Linux, Arch" />
-  <meta name="author" content="Desaichk" />
-  <meta name="theme-color" content="#a259ff" />
-  <!-- Open Graph -->
-  <meta property="og:title" content="Desaichk — Developer Portfolio" />
-  <meta property="og:description"
-    content="Портфолио независимого IT-специалиста. Системное программирование, кастомные UI-решения, нейросети." />
-  <meta property="og:image" content="images/ava.jpg" />
-  <meta property="og:url" content="https://desaichk.com/" />
-  <meta property="og:type" content="website" />
-  <!-- Twitter Card -->
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Desaichk — Developer Portfolio" />
-  <meta name="twitter:description" content="Системный программист из СПб. ChromaSync, AI-боты, C++ проекты." />
-  <meta name="twitter:image" content="images/ava.jpg" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link
-    href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;700&family=Inter:wght@300;400;500;600;700;800;900&display=swap"
-    rel="stylesheet" />
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Desaichk — Portfolio</title>
+  <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
-  <!-- CHROMASYNC CANVAS BACKGROUND -->
-  <canvas id="chromaCanvas"></canvas>
-  <div class="noise-overlay"></div>
+  <!-- Невидимые SVG фильтры для графики -->
+  <svg style="position: absolute; width: 0; height: 0; pointer-events: none;">
+    <!-- Фильтр для эффекта карандашной штриховки (дрожащие линии) -->
+    <filter id="rough-edge" x="-20%" y="-20%" width="140%" height="140%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.08" numOctaves="3" result="noise" />
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="4" xChannelSelector="R" yChannelSelector="G" />
+    </filter>
+  </svg>
 
-  <!-- CURSOR GLOW -->
-  <div class="cursor-glow" id="cursorGlow"></div>
+  <!-- Лист блокнота -->
+  <div class="notebook-page">
+    <!-- Пружина / спираль -->
+    <div class="spirals"></div>
 
-  <!-- NAVIGATION -->
-  <nav class="navbar" id="navbar">
-    <div class="nav-logo">
-      <span class="nav-logo-bracket">[</span>
-      <span class="nav-logo-name">Desaichk</span>
-      <span class="nav-logo-bracket">]</span>
-    </div>
-    <ul class="nav-links">
-      <li><a href="index.html" class="nav-link">main</a></li>
-      <li><a href="blog.html" class="nav-link">blog</a></li>
-      <li><a href="about.html" class="nav-link">about</a></li>
-      <li><a href="contacts.html" class="nav-link">contacts</a></li>
-      <li><a href="#projects" class="nav-link">projects</a></li>
-    </ul>
-    <div class="nav-terminal-hint">
-      <kbd>Ctrl</kbd> + <kbd>`</kbd> — terminal
-    </div>
-  </nav>
+    <!-- Точечная сетка -->
+    <div class="dot-grid"></div>
 
-  <!-- HERO SECTION -->
-  <section class="hero" id="hero">
-    <div class="hero-content">
-      <div class="hero-badge">
-        <span class="badge-dot"></span>
-        <span>Available for work</span>
+    <!-- Тень переплёта -->
+    <div class="binding-shadow"></div>
+
+    <!-- Фактура бумаги (шум) -->
+    <div class="paper-texture"></div>
+
+    <!-- Скручивающийся хедер -->
+    <header class="rolled-header">
+      <div class="header-flat">
+        <div class="logo-sketch">EK</div>
+        <nav class="nav-sketch">
+          <a href="#about" class="nav-item"><span class="checkbox">[ ]</span> обо мне</a>
+          <a href="#projects" class="nav-item"><span class="checkbox">[ ]</span> проекты</a>
+          <a href="#stack" class="nav-item"><span class="checkbox">[ ]</span> стек</a>
+          <a href="#contact" class="nav-item"><span class="checkbox">[ ]</span> контакты</a>
+        </nav>
       </div>
-      <h1 class="hero-title">
-        <span class="hero-greeting">Привет, я</span>
-        <span class="hero-name glitch" data-text="Desaichk">Desaichk</span>
-      </h1>
-      <p class="hero-tagline">
-        <span class="tagline-prefix"><em>C++ &amp; C# developer</em></span>
-        <span class="tagline-separator"> · </span>
-        <span class="tagline-typed" id="typedText"></span><span class="tagline-cursor">|</span>
-      </p>
-      <p class="hero-desc">
-        Студент из Санкт-Петербурга, стараюсь разобраться во всем что мне интересно, досканально.
-        Специализируюсь на системном программировании, кастомных UI-решениях и нейросетях.
-      </p>
-      <div class="hero-cta">
-        <a href="#projects" class="btn btn-primary">
-          <span>Смотреть проекты</span>
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
-            <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-          </svg>
-        </a>
-        <a href="https://github.com/Desai0" target="_blank" class="btn btn-ghost">
-          <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-            <path
-              d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.92.359.31.678.921.678 1.856 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
-          </svg>
-          GitHub
-        </a>
-      </div>
-      <div class="hero-stats">
-        <div class="stat-item"><span class="stat-num">19</span><span class="stat-label">лет</span></div>
-        <div class="stat-divider"></div>
-        <div class="stat-item"><span class="stat-num">6</span><span class="stat-label">проектов</span></div>
-        <div class="stat-divider"></div>
-        <div class="stat-item"><span class="stat-num">21★</span><span class="stat-label">звёзд</span></div>
-        <div class="stat-divider"></div>
-        <div class="stat-item"><span class="stat-num">SPb</span><span class="stat-label">Россия</span></div>
-      </div>
-    </div>
+      <!-- Цилиндр скрутки -->
+      <div class="header-roll" id="paperRoll"></div>
+    </header>
 
-    <div class="hero-visual">
-      <div class="chroma-demo">
-        <div class="chroma-player">
-          <div class="chroma-album">
-            <div class="chroma-album-inner">
-              <div class="album-art">
-                <div class="album-gradient" id="albumGradient"></div>
-                <div class="album-pulse-ring" id="pulseRing1"></div>
-                <div class="album-pulse-ring" id="pulseRing2"></div>
-                <img src="images/ava.jpg" alt="Desaichk" class="album-avatar" width="120" height="120" loading="eager"
-                  decoding="async" />
-              </div>
-            </div>
-          </div>
-          <div class="chroma-info">
-            <div class="chroma-track" id="demoTrack">ChromaSync Demo</div>
-            <div class="chroma-artist" id="demoArtist">Desai0 · YandexMusic</div>
-          </div>
-          <div class="chroma-controls">
-            <button class="ctrl-btn" id="prevBtn">⏮</button>
-            <button class="ctrl-btn play-btn" id="playBtn">▶</button>
-            <button class="ctrl-btn" id="nextBtn">⏭</button>
-          </div>
-          <div class="chroma-progress">
-            <div class="progress-bar">
-              <div class="progress-fill" id="progressFill"></div>
-            </div>
-          </div>
-        </div>
-        <div class="chroma-badge">ChromaSync Live Demo</div>
-      </div>
-    </div>
+    <!-- Контент -->
+    <main class="page-content">
+      <div class="hero-section">
 
-    <div class="hero-scroll-hint">
-      <div class="scroll-arrow"></div>
-      <span>scroll</span>
-    </div>
-  </section>
+        <!-- Левая часть: Заголовок -->
+        <div class="hero-left">
+          <h1 class="hero-title">
+            <span style="display: inline-block;" data-scribble="true" data-scribble-type="underline" data-scribble-color="rgba(30, 30, 30, 0.6)" data-scribble-stroke="3.5" data-scribble-passes="4" data-scribble-jitter="15" data-scribble-width="1.1">Desaichk</span>
+          </h1>
+          <p class="hero-subtitle">
+            разработчик,<br>
+            который придумывает,<br>
+            ломает и пересобирает <br>
+            <span class="marker-red">системы</span>
+          </p>
 
-  <!-- PROJECTS SECTION -->
-  <section class="section projects-section" id="projects">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-tag">// projects</span>
-        <h2 class="section-title">Что я создаю</h2>
-        <p class="section-subtitle">Реальные проекты, реальные задачи</p>
-      </div>
-
-      <div class="projects-filter" id="projectsFilter">
-        <button class="filter-btn active" data-filter="all">Все</button>
-        <button class="filter-btn" data-filter="system">System</button>
-        <button class="filter-btn" data-filter="ai">AI / ML</button>
-        <button class="filter-btn" data-filter="gamedev">Game Dev</button>
-      </div>
-
-      <!-- Featured: ChromaSync -->
-      <div class="featured-project">
-        <div class="featured-glow"></div>
-        <div class="featured-content">
-          <div class="featured-left">
-            <div class="project-badges">
-              <span class="badge badge-featured">⭐ Featured</span>
-              <span class="badge badge-lang lang-js">JavaScript</span>
-              <span class="badge badge-stars">★ 16</span>
-            </div>
-            <h3 class="featured-title">ChromaSync</h3>
-            <p class="featured-desc">
-              Адаптивная тема для Яндекс Музыки — «эффект хамелеона». Анализирует обложку трека,
-              извлекает палитру и плавно перекрашивает весь интерфейс. Эффект параллакса,
-              пульсация на биты в режимах RAW и OSU, Zen Mode, комментарии.
-            </p>
-            <div class="featured-features">
-              <div class="feature-chip">🌈 Динамические цвета</div>
-              <div class="feature-chip">💥 Beat Pulse (RAW/OSU)</div>
-              <div class="feature-chip">☯️ Zen Mode</div>
-              <div class="feature-chip">🌠 Parallax BG</div>
-              <div class="feature-chip">💬 TG-комментарии</div>
-              <div class="feature-chip">⚡ MutationObserver</div>
-            </div>
-            <a href="https://github.com/Desai0/ChromaSync" target="_blank" class="btn btn-primary btn-sm">
-              <span>Открыть на GitHub</span>
-              <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-                <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" />
-              </svg>
-            </a>
-          </div>
-          <div class="featured-right">
-            <div class="mockup-window">
-              <div class="mockup-bar">
-                <span class="mockup-dot red"></span>
-                <span class="mockup-dot yellow"></span>
-                <span class="mockup-dot green"></span>
-                <span class="mockup-title-bar">Яндекс Музыка — ChromaSync</span>
-              </div>
-              <div class="mockup-screen mockup-screenshot">
-                <img src="images/Screenshot.png" alt="ChromaSync screenshot" class="chromasync-screenshot" width="600"
-                  height="220" loading="lazy" decoding="async" />
-                <div class="mockup-accent-bar" id="mockupProg"></div>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Projects Grid -->
-      <div class="projects-grid">
-        <div class="project-card" data-tilt data-category="system">
-          <div class="card-glow"></div>
-          <div class="card-header">
-            <div class="card-icon">⚙️</div>
-            <div class="card-langs">
-              <span class="badge-lang lang-cpp">C++</span>
-              <span class="badge-lang lang-js">Electron</span>
-            </div>
-          </div>
-          <h3 class="card-title">Task Manager</h3>
-          <p class="card-desc">Диспетчер задач на C++ + Electron. Бэкенд на TCP/IP сокетах с JSON. Группировка
-            процессов, графики нагрузки CPU/RAM, завершение через PID.</p>
-          <div class="card-features"><span>TCP/IP Backend</span><span>Real-time CPU/RAM</span><span>Process
-              Groups</span></div>
-          <div class="card-footer">
-            <div class="card-stars">★ 2</div>
-            <a href="https://github.com/Desai0/Task-Manager-Rebuild" target="_blank" class="card-link">GitHub →</a>
-          </div>
-        </div>
-
-        <div class="project-card" data-tilt data-category="ai">
-          <div class="card-glow"></div>
-          <div class="card-header">
-            <div class="card-icon">🤖</div>
-            <div class="card-langs">
-              <span class="badge-lang lang-py">Python</span>
-              <span class="badge-lang lang-cpp">C++</span>
-            </div>
-          </div>
-          <h3 class="card-title">CR Neuro</h3>
-          <p class="card-desc">AI-бот для Clash Royale. YOLOv12 для детекции юнитов, Tesseract OCR для считывания
-            статов, обучение на демонстрациях + Reinforcement Learning.</p>
-          <div class="card-features"><span>YOLOv12</span><span>Tesseract OCR</span><span>RL Agent</span></div>
-          <div class="card-footer">
-            <div class="card-stars">★ 5</div>
-            <a href="https://github.com/Desai0/CR_Neuro" target="_blank" class="card-link">GitHub →</a>
-          </div>
-        </div>
-
-        <div class="project-card" data-tilt data-category="gamedev">
-          <div class="card-glow"></div>
-          <div class="card-header">
-            <div class="card-icon">♟️</div>
-            <div class="card-langs"><span class="badge-lang lang-cpp">C++</span></div>
-          </div>
-          <h3 class="card-title">OOP Шашки</h3>
-          <p class="card-desc">Реализация игры в шашки на C++ с полноценным применением принципов
-            объектно-ориентированного программирования. Паттерны, полиморфизм, инкапсуляция.</p>
-          <div class="card-features"><span>OOP</span><span>Game Logic</span><span>C++</span></div>
-          <div class="card-footer">
-            <div class="card-stars">★ 0</div>
-            <a href="https://github.com/Desai0/OOP_Project_Shashki" target="_blank" class="card-link">GitHub →</a>
-          </div>
-        </div>
-
-        <div class="project-card" data-tilt data-category="gamedev">
-          <div class="card-glow"></div>
-          <div class="card-header">
-            <div class="card-icon">🐍</div>
-            <div class="card-langs"><span class="badge-lang lang-cpp">C++</span></div>
-          </div>
-          <h3 class="card-title">Змейка</h3>
-          <p class="card-desc">Классическая игра «Змейка» на C++. Управление, коллизии, счётчик очков — чистая логика
-            без лишних зависимостей.</p>
-          <div class="card-features"><span>Game Dev</span><span>Collision</span><span>C++</span></div>
-          <div class="card-footer">
-            <div class="card-stars">★ 0</div>
-            <a href="https://github.com/Desai0/Zmeya-Game" target="_blank" class="card-link">GitHub →</a>
-          </div>
-        </div>
-
-        <div class="project-card" data-tilt data-category="gamedev">
-          <div class="card-glow"></div>
-          <div class="card-header">
-            <div class="card-icon">💣</div>
-            <div class="card-langs"><span class="badge-lang lang-cpp">C++</span></div>
-          </div>
-          <h3 class="card-title">MineSwapper</h3>
-          <p class="card-desc">Сапёр на C++. Генерация минного поля, рекурсивное открытие ячеек, флаги и таймер —
-            классика в чистом виде.</p>
-          <div class="card-features"><span>Recursion</span><span>Game Logic</span><span>C++</span></div>
-          <div class="card-footer">
-            <div class="card-stars">★ 0</div>
-            <a href="https://github.com/Desai0/MineSwapper" target="_blank" class="card-link">GitHub →</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- SKILLS SECTION -->
-  <section class="section skills-section" id="skills">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-tag">// skills</span>
-        <h2 class="section-title">Стек</h2>
-        <p class="section-subtitle">Технологии, с которыми я работаю</p>
-      </div>
-      <div class="skills-layout">
-        <div class="skills-grid">
-          <div class="skill-category">
-            <div class="skill-cat-header"><span class="skill-cat-icon">⚡</span><span class="skill-cat-name">Core
-                Languages</span></div>
-            <div class="skill-items">
-              <div class="skill-item">
-                <div class="skill-info"><span class="skill-name">C++</span><span class="skill-percent">85%</span></div>
-                <div class="skill-bar">
-                  <div class="skill-fill" style="--target:85%"></div>
-                </div>
-              </div>
-              <div class="skill-item">
-                <div class="skill-info"><span class="skill-name">C# / .NET</span><span class="skill-percent">75%</span>
-                </div>
-                <div class="skill-bar">
-                  <div class="skill-fill" style="--target:75%"></div>
-                </div>
-              </div>
-              <div class="skill-item">
-                <div class="skill-info"><span class="skill-name">Python</span><span class="skill-percent">65%</span>
-                </div>
-                <div class="skill-bar">
-                  <div class="skill-fill" style="--target:65%"></div>
-                </div>
-              </div>
-              <div class="skill-item">
-                <div class="skill-info"><span class="skill-name">JavaScript</span><span class="skill-percent">60%</span>
-                </div>
-                <div class="skill-bar">
-                  <div class="skill-fill" style="--target:60%"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="skill-category">
-            <div class="skill-cat-header"><span class="skill-cat-icon">🗄️</span><span class="skill-cat-name">Data &amp;
-                Backend</span></div>
-            <div class="skill-items">
-              <div class="skill-item">
-                <div class="skill-info"><span class="skill-name">PostgreSQL</span><span class="skill-percent">70%</span>
-                </div>
-                <div class="skill-bar">
-                  <div class="skill-fill" style="--target:70%"></div>
-                </div>
-              </div>
-              <div class="skill-item">
-                <div class="skill-info"><span class="skill-name">SQLite</span><span class="skill-percent">72%</span>
-                </div>
-                <div class="skill-bar">
-                  <div class="skill-fill" style="--target:72%"></div>
-                </div>
-              </div>
-              <div class="skill-item">
-                <div class="skill-info"><span class="skill-name">TCP/IP Sockets</span><span
-                    class="skill-percent">55%</span></div>
-                <div class="skill-bar">
-                  <div class="skill-fill" style="--target:55%"></div>
-                </div>
-              </div>
-              <div class="skill-item">
-                <div class="skill-info"><span class="skill-name">Electron</span><span class="skill-percent">60%</span>
-                </div>
-                <div class="skill-bar">
-                  <div class="skill-fill" style="--target:60%"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="skill-category">
-            <div class="skill-cat-header"><span class="skill-cat-icon">🤖</span><span class="skill-cat-name">AI /
-                ML</span></div>
-            <div class="skill-items">
-              <div class="skill-item">
-                <div class="skill-info"><span class="skill-name">YOLO (CV)</span><span class="skill-percent">60%</span>
-                </div>
-                <div class="skill-bar">
-                  <div class="skill-fill" style="--target:60%"></div>
-                </div>
-              </div>
-              <div class="skill-item">
-                <div class="skill-info"><span class="skill-name">Neural Networks</span><span
-                    class="skill-percent">55%</span></div>
-                <div class="skill-bar">
-                  <div class="skill-fill" style="--target:55%"></div>
-                </div>
-              </div>
-              <div class="skill-item">
-                <div class="skill-info"><span class="skill-name">Reinforcement Learning</span><span
-                    class="skill-percent">50%</span></div>
-                <div class="skill-bar">
-                  <div class="skill-fill" style="--target:50%"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="skill-category">
-            <div class="skill-cat-header"><span class="skill-cat-icon">🔧</span><span class="skill-cat-name">Systems
-                &amp; Tools</span></div>
-            <div class="skill-items">
-              <div class="skill-item">
-                <div class="skill-info"><span class="skill-name">Linux / Arch</span><span
-                    class="skill-percent">80%</span></div>
-                <div class="skill-bar">
-                  <div class="skill-fill" style="--target:80%"></div>
-                </div>
-              </div>
-              <div class="skill-item">
-                <div class="skill-info"><span class="skill-name">Android / ROM / Root</span><span
-                    class="skill-percent">75%</span></div>
-                <div class="skill-bar">
-                  <div class="skill-fill" style="--target:75%"></div>
-                </div>
-              </div>
-              <div class="skill-item">
-                <div class="skill-info"><span class="skill-name">Bash / Shell</span><span
-                    class="skill-percent">65%</span></div>
-                <div class="skill-bar">
-                  <div class="skill-fill" style="--target:65%"></div>
-                </div>
-              </div>
-              <div class="skill-item">
-                <div class="skill-info"><span class="skill-name">VPN / Xray / Nginx</span><span
-                    class="skill-percent">70%</span></div>
-                <div class="skill-bar">
-                  <div class="skill-fill" style="--target:70%"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="skills-sidebar">
-          <div class="tech-tags-cloud">
-            <h3 class="cloud-title">Tech Cloud</h3>
-            <div class="cloud-tags">
-              <span class="cloud-tag size-lg">C++</span>
-              <span class="cloud-tag size-md">C#</span>
-              <span class="cloud-tag size-sm">Python</span>
-              <span class="cloud-tag size-sm">JavaScript</span>
-              <span class="cloud-tag size-md">Linux</span>
-              <span class="cloud-tag size-sm">Arch</span>
-              <span class="cloud-tag size-sm">Electron</span>
-              <span class="cloud-tag size-xs">PostgreSQL</span>
-              <span class="cloud-tag size-xs">SQLite</span>
-              <span class="cloud-tag size-sm">YOLOv12</span>
-              <span class="cloud-tag size-xs">OpenCV</span>
-              <span class="cloud-tag size-xs">Tesseract</span>
-              <span class="cloud-tag size-xs">Nginx</span>
-              <span class="cloud-tag size-xs">Xray</span>
-              <span class="cloud-tag size-xs">Bash</span>
-              <span class="cloud-tag size-xs">OOP</span>
-              <span class="cloud-tag size-xs">Git</span>
-              <span class="cloud-tag size-xs">TCP/IP</span>
-            </div>
-          </div>
-          <div class="principles-card">
-            <h3 class="principles-title">Принципы</h3>
-            <ul class="principles-list">
-              <li><span class="principle-icon">🔬</span> Углубляться в тему максимально</li>
-              <li><span class="principle-icon">⚡</span> Performance first</li>
-              <li><span class="principle-icon">🎨</span> UI — это не декорация</li>
-              <li><span class="principle-icon">🔓</span> Open Source &amp; кастомизация</li>
-              <li><span class="principle-icon">🧪</span> Разбирать и строить лучше</li>
-            </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ABOUT SECTION -->
-  <section class="section about-section" id="about">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-tag">// about</span>
-        <h2 class="section-title">Кто я</h2>
-      </div>
-      <div class="about-layout">
-        <div class="about-text">
-          <p>Студент из Санкт-Петербурга, изучаю разработку ПО. Начал с C++, потом дошёл до нейросетей, собственного
-            VPN-сервера и кастомных тем для плееров.</p>
-          <p>Несколько лет занимаюсь Android: <strong>прошивал десятки кастомных ROM</strong>, восстанавливал «кирпичи»,
-            разбирался с EDL. Настраивал роутеры через Entware, поднимал <strong>Xray VPN с XHTTP + Nginx + SelfSteal +
-              CDN</strong>, хостю сервер.</p>
-          <p>Люблю, когда система настроена под себя до мелочей. ChromaSync — это именно про это: интерфейс, который
-            живёт вместе с музыкой.</p>
-          <div class="about-setup">
-            <h3 class="setup-title">// setup</h3>
-            <div class="setup-items">
-              <div class="setup-item"><span class="setup-icon">📱</span><span>OnePlus 12 (rooted)</span></div>
-              <div class="setup-item"><span class="setup-icon">🎮</span><span>RTX 5070 Ti</span></div>
-              <div class="setup-item"><span class="setup-icon">🔵</span><span>Intel Core i5-13600KF</span></div>
-              <div class="setup-item"><span class="setup-icon">🐧</span><span>Arch Linux (btw)</span></div>
-              <div class="setup-item"><span class="setup-icon">🖥️</span><span>Windows (по необходимости)</span></div>
-              <div class="setup-item"><span class="setup-icon">🔐</span><span>Self-hosted Xray VPN</span></div>
-            </div>
-          </div>
-        </div>
-        <div class="about-visual">
-          <div class="terminal-preview">
-            <div class="term-bar">
-              <span class="mockup-dot red"></span>
-              <span class="mockup-dot yellow"></span>
-              <span class="mockup-dot green"></span>
-              <span class="term-title">desaichk@arch ~ $</span>
-            </div>
-            <div class="term-body">
-              <div class="term-line"><span class="term-prompt">$ </span><span class="term-cmd">whoami</span></div>
-              <div class="term-line term-output">desaichk</div>
-              <div class="term-line"><span class="term-prompt">$ </span><span class="term-cmd">uname -a</span></div>
-              <div class="term-line term-output">Linux arch 6.12 x86_64 GNU/Linux</div>
-              <div class="term-line"><span class="term-prompt">$ </span><span class="term-cmd">cat skills.txt</span>
-              </div>
-              <div class="term-line term-output">C++, C#, Python, JS, OOP</div>
-              <div class="term-line term-output">Databases, Linux, Android</div>
-              <div class="term-line term-output">Neural Networks, VPN Setup</div>
-              <div class="term-line"><span class="term-prompt">$ </span><span class="term-cmd">ls projects/</span></div>
-              <div class="term-line term-output">ChromaSync/ TaskManager/ CR_Neuro/ ...</div>
-              <div class="term-line"><span class="term-prompt">$ </span><span class="term-cmd blink">▋</span></div>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CONTACT SECTION -->
-  <section class="section contact-section" id="contact">
-    <div class="container">
-      <div class="section-header">
-        <span class="section-tag">// contact</span>
-        <h2 class="section-title">Связь</h2>
-        <p class="section-subtitle">Открыт к предложениям, коллаборациям и интересным задачам</p>
-      </div>
-      <div class="contact-cards">
-        <a href="https://t.me/desaichk" target="_blank" class="contact-card telegram">
-          <div class="contact-icon">
-            <svg viewBox="0 0 24 24" fill="currentColor" width="32" height="32">
-              <path
-                d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.21-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.053 5.56-5.023c.242-.213-.054-.333-.373-.12l-6.869 4.326-2.96-.924c-.643-.204-.657-.643.136-.953l11.57-4.461c.537-.194 1.006.131.83.941z" />
+          <!-- Указатель на правый блок -->
+          <div class="hero-arrow">
+            <svg width="180" height="120" viewBox="0 0 180 120" style="overflow: visible; mix-blend-mode: multiply; filter: url(#rough-edge);">
+              <!-- Небрежная стрелка-маркер -->
+              <path d="M10,20 Q80,100 160,50" fill="none" stroke="rgba(211, 47, 47, 0.6)" stroke-width="12" stroke-linecap="round" />
+              <path d="M140,40 L165,48 L150,70" fill="none" stroke="rgba(211, 47, 47, 0.6)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" />
             </svg>
+            <span class="arrow-label">it's me</span>
           </div>
-          <div class="contact-info">
-            <span class="contact-label">Telegram</span>
-            <span class="contact-value">@desaichk</span>
-          </div>
-          <span class="contact-arrow">→</span>
-        </a>
-        <a href="https://github.com/Desai0" target="_blank" class="contact-card github">
-          <div class="contact-icon">
-            <svg viewBox="0 0 24 24" fill="currentColor" width="32" height="32">
-              <path
-                d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.531 1.032 1.531 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.92.359.31.678.921.678 1.856 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z" />
-            </svg>
-          </div>
-          <div class="contact-info">
-            <span class="contact-label">GitHub</span>
-            <span class="contact-value">Desai0</span>
-          </div>
-          <span class="contact-arrow">→</span>
-        </a>
-        <a href="mailto:kolobokevgenij83@gmail.com" class="contact-card email">
-          <div class="contact-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="32" height="32">
-              <rect x="2" y="4" width="20" height="16" rx="2" />
-              <path d="m2 7 10 7 10-7" />
-            </svg>
-          </div>
-          <div class="contact-info">
-            <span class="contact-label">Email</span>
-            <span class="contact-value">kolobokevgenij83</span>
-          </div>
-          <span class="contact-arrow">→</span>
-        </a>
-      </div>
-    </div>
-  </section>
-
-  <!-- FOOTER -->
-  <footer class="footer">
-    <div class="container">
-      <div class="footer-content">
-        <span class="footer-name">Desaichk © 2026</span>
-        <span class="footer-hint">Нажми <kbd>Ctrl</kbd>+<kbd>`</kbd> — там кое-что есть 👾</span>
-        <span class="footer-stack">Built with vanilla JS + love</span>
-      </div>
-    </div>
-  </footer>
-
-  <!-- HIDDEN TERMINAL EASTER EGG -->
-  <div class="terminal-overlay" id="terminalOverlay">
-    <div class="terminal-window">
-      <div class="terminal-header">
-        <div class="terminal-header-left">
-          <span class="mockup-dot red" id="termClose"></span>
-          <span class="mockup-dot yellow"></span>
-          <span class="mockup-dot green"></span>
         </div>
-        <div class="terminal-header-title">desaichk@portfolio ~ — bash</div>
-        <div class="terminal-header-hint">Esc или Ctrl+` — закрыть</div>
-      </div>
-      <div class="terminal-body" id="terminalBody">
-        <div class="terminal-welcome">
-          <pre class="ascii-art">  ██████╗ ███████╗███████╗ █████╗ ██╗
-  ██╔══██╗██╔════╝██╔════╝██╔══██╗██║
-  ██║  ██║█████╗  ███████╗███████║██║
-  ██║  ██║██╔══╝  ╚════██║██╔══██║██║
-  ██████╔╝███████╗███████║██║  ██║██║
-  ╚═════╝ ╚══════╝╚══════╝╚═╝  ╚═╝╚═╝</pre>
-          <p class="welcome-text">Welcome to Desaichk's Portfolio Terminal v1.0.0</p>
-          <p class="welcome-hint">Type <span class="cmd-highlight">help</span> to see available commands · Tab for
-            autocomplete · ↑↓ history</p>
+
+        <div class="hero-center-doodles">
+          <!-- Абстрактные штрихи и каракули через нашу систему -->
+          <div class="doodle d-shading" data-scribble="true" data-scribble-type="fill" data-scribble-passes="1" data-scribble-step="25" data-scribble-jitter="30" data-scribble-color="rgba(30,30,30,0.15)"></div>
+          <div class="doodle d-box" data-scribble="true" data-scribble-type="box" data-scribble-passes="2" data-scribble-jitter="15" data-scribble-color="rgba(30,30,30,0.2)"></div>
+          <div class="doodle d-line" data-scribble="true" data-scribble-type="underline" data-scribble-passes="8" data-scribble-jitter="25" data-scribble-color="rgba(211,47,47,0.2)" data-scribble-width="1.5"></div>
+          <div class="doodle d-star" data-scribble="true" data-scribble-type="underline" data-scribble-passes="3" data-scribble-jitter="10" data-scribble-color="rgba(30,30,30,0.3)" data-scribble-angle="45"></div>
+          <div class="doodle d-star-alt" data-scribble="true" data-scribble-type="underline" data-scribble-passes="3" data-scribble-jitter="10" data-scribble-color="rgba(30,30,30,0.3)" data-scribble-angle="-45"></div>
         </div>
-        <div class="terminal-output" id="terminalOutput"></div>
+
+        <!-- Правая часть: Аватарка (рисунок карандашом) -->
+        <div class="hero-right">
+          <div class="avatar-block">
+            <img src="images/ava.png" alt="Desaichk Avatar" class="pencil-avatar">
+            
+            <!-- Скотч по краям (как будто кусок со скетчем приклеен к листу) -->
+            <div class="tape tape-top"></div>
+            <div class="tape tape-bottom"></div>
+          </div>
+        </div>
+
       </div>
-      <div class="terminal-input-line">
-        <span class="term-prompt-main">desaichk@portfolio:~$</span>
-        <input type="text" class="terminal-input" id="terminalInput" autocomplete="off" spellcheck="false"
-          placeholder="type a command..." />
-      </div>
-    </div>
+
+      <!-- Место для прокрутки -->
+      <div style="height: 100vh;"></div>
+    </main>
   </div>
 
   <script src="script.js"></script>
-  <script src="terminal.js"></script>
 </body>
 
 </html>
