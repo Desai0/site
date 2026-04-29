@@ -17,10 +17,47 @@
       <feTurbulence type="fractalNoise" baseFrequency="0.08" numOctaves="3" result="noise" />
       <feDisplacementMap in="SourceGraphic" in2="noise" scale="4" xChannelSelector="R" yChannelSelector="G" />
     </filter>
+    <!-- Фильтр для длинных волнистых линий — меньше смещение -->
+    <filter id="pencil-line" x="-5%" y="-1%" width="110%" height="102%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.04 0.01" numOctaves="3" result="noise" />
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G" />
+    </filter>
   </svg>
 
   <!-- Лист блокнота -->
   <div class="notebook-page">
+    <!-- Волнистая красная линия СЛЕВА блокнота -->
+    <svg class="side-wave side-wave-left" viewBox="0 0 60 3000" preserveAspectRatio="none"
+      style="position:absolute;top:0;left:30px;width:60px;height:100%;pointer-events:none;z-index:0;overflow:visible;">
+      <path
+        d="M30,0 C45,150 15,300 30,450 C45,600 15,750 30,900 C45,1050 15,1200 30,1350 C45,1500 15,1650 30,1800 C45,1950 15,2100 30,2250 C45,2400 15,2550 30,2700 C45,2850 15,3000 30,3000"
+        fill="none" stroke="rgba(200,40,40,0.45)" stroke-width="2.5" stroke-linecap="round"
+        filter="url(#pencil-line)" />
+      <path
+        d="M32,0 C47,150 17,300 32,450 C47,600 17,750 32,900 C47,1050 17,1200 32,1350 C47,1500 17,1650 32,1800 C47,1950 17,2100 32,2250 C47,2400 17,2550 32,2700 C47,2850 17,3000 32,3000"
+        fill="none" stroke="rgba(200,40,40,0.25)" stroke-width="1.2" stroke-linecap="round"
+        filter="url(#pencil-line)" />
+      <path
+        d="M28,0 C43,150 13,300 28,450 C43,600 13,750 28,900 C43,1050 13,1200 28,1350 C43,1500 13,1650 28,1800 C43,1950 13,2100 28,2250 C43,2400 13,2550 28,2700 C43,2850 13,3000 28,3000"
+        fill="none" stroke="rgba(200,40,40,0.15)" stroke-width="4" stroke-linecap="round" filter="url(#pencil-line)" />
+    </svg>
+
+    <!-- Волнистая красная линия СПРАВА блокнота -->
+    <svg class="side-wave side-wave-right" viewBox="0 0 60 3000" preserveAspectRatio="none"
+      style="position:absolute;top:0;right:0;width:60px;height:100%;pointer-events:none;z-index:0;overflow:visible;">
+      <path
+        d="M30,0 C15,150 45,300 30,450 C15,600 45,750 30,900 C15,1050 45,1200 30,1350 C15,1500 45,1650 30,1800 C15,1950 45,2100 30,2250 C15,2400 45,2550 30,2700 C15,2850 45,3000 30,3000"
+        fill="none" stroke="rgba(200,40,40,0.45)" stroke-width="2.5" stroke-linecap="round"
+        filter="url(#pencil-line)" />
+      <path
+        d="M28,0 C13,150 43,300 28,450 C13,600 43,750 28,900 C13,1050 43,1200 28,1350 C13,1500 43,1650 28,1800 C13,1950 43,2100 28,2250 C13,2400 43,2550 28,2700 C13,2850 43,3000 28,3000"
+        fill="none" stroke="rgba(200,40,40,0.25)" stroke-width="1.2" stroke-linecap="round"
+        filter="url(#pencil-line)" />
+      <path
+        d="M32,0 C17,150 47,300 32,450 C17,600 47,750 32,900 C17,1050 47,1200 32,1350 C17,1500 47,1650 32,1800 C17,1950 47,2100 32,2250 C17,2400 47,2550 32,2700 C17,2850 47,3000 32,3000"
+        fill="none" stroke="rgba(200,40,40,0.15)" stroke-width="4" stroke-linecap="round" filter="url(#pencil-line)" />
+    </svg>
+
     <!-- Пружина / спираль -->
     <div class="spirals"></div>
 
@@ -50,12 +87,45 @@
 
     <!-- Контент -->
     <main class="page-content">
+      <!-- Декоративные элементы на фоне блокнота (синий карандаш) -->
+      <div class="notebook-decorations">
+        <div class="nb-doodle nb-heart-top" data-scribble="true" data-scribble-type="heart"
+          data-scribble-color="rgba(0, 100, 255, 0.25)" data-scribble-passes="2" data-scribble-jitter="8"></div>
+        <div class="nb-doodle nb-star-top" data-scribble="true" data-scribble-type="star"
+          data-scribble-color="rgba(0, 150, 255, 0.3)" data-scribble-passes="1" data-scribble-jitter="5"
+          data-scribble-angle="20"></div>
+        <div class="nb-doodle nb-heart-bottom" data-scribble="true" data-scribble-type="heart"
+          data-scribble-color="rgba(0, 120, 255, 0.2)" data-scribble-passes="1" data-scribble-jitter="12"
+          data-scribble-angle="-15"></div>
+        <div class="nb-doodle nb-star-right" data-scribble="true" data-scribble-type="star"
+          data-scribble-color="rgba(0, 180, 255, 0.25)" data-scribble-passes="1" data-scribble-jitter="7"></div>
+
+        <!-- Зелёные карандашные кружочки -->
+        <div class="nb-doodle nb-circle-1" data-scribble="true" data-scribble-type="circle"
+          data-scribble-color="rgba(30, 160, 60, 0.3)" data-scribble-passes="3" data-scribble-jitter="6"
+          data-scribble-stroke="1.5"></div>
+        <div class="nb-doodle nb-circle-2" data-scribble="true" data-scribble-type="circle"
+          data-scribble-color="rgba(40, 180, 80, 0.25)" data-scribble-passes="2" data-scribble-jitter="9"
+          data-scribble-stroke="1.2"></div>
+        <div class="nb-doodle nb-circle-3" data-scribble="true" data-scribble-type="circle"
+          data-scribble-color="rgba(20, 140, 50, 0.35)" data-scribble-passes="3" data-scribble-jitter="5"
+          data-scribble-stroke="1.8"></div>
+        <div class="nb-doodle nb-circle-4" data-scribble="true" data-scribble-type="circle"
+          data-scribble-color="rgba(50, 170, 70, 0.2)" data-scribble-passes="2" data-scribble-jitter="11"
+          data-scribble-stroke="1.2"></div>
+        <div class="nb-doodle nb-circle-5" data-scribble="true" data-scribble-type="circle"
+          data-scribble-color="rgba(30, 155, 65, 0.3)" data-scribble-passes="2" data-scribble-jitter="7"
+          data-scribble-stroke="1.5"></div>
+      </div>
+
       <div class="hero-section">
 
         <!-- Левая часть: Заголовок -->
         <div class="hero-left">
           <h1 class="hero-title">
-            <span style="display: inline-block;" data-scribble="true" data-scribble-type="underline" data-scribble-color="rgba(30, 30, 30, 0.6)" data-scribble-stroke="3.5" data-scribble-passes="4" data-scribble-jitter="15" data-scribble-width="1.1">Desaichk</span>
+            <span style="display: inline-block;" data-scribble="true" data-scribble-type="underline"
+              data-scribble-color="rgba(30, 30, 30, 0.6)" data-scribble-stroke="3.5" data-scribble-passes="4"
+              data-scribble-jitter="15" data-scribble-width="1.1">Desaichk</span>
           </h1>
           <p class="hero-subtitle">
             разработчик,<br>
@@ -66,29 +136,83 @@
 
           <!-- Указатель на правый блок -->
           <div class="hero-arrow">
-            <svg width="180" height="120" viewBox="0 0 180 120" style="overflow: visible; mix-blend-mode: multiply; filter: url(#rough-edge);">
-              <!-- Небрежная стрелка-маркер -->
-              <path d="M10,20 Q80,100 160,50" fill="none" stroke="rgba(211, 47, 47, 0.6)" stroke-width="12" stroke-linecap="round" />
-              <path d="M140,40 L165,48 L150,70" fill="none" stroke="rgba(211, 47, 47, 0.6)" stroke-width="12" stroke-linecap="round" stroke-linejoin="round" />
+            <svg width="220" height="140" viewBox="0 0 220 140"
+              style="overflow: visible; mix-blend-mode: multiply; filter: url(#rough-edge);">
+              <!-- Основное тело стрелки (три небрежных прохода) -->
+              <path d="M20,30 C60,120 120,130 180,60" fill="none" stroke="rgba(211, 47, 47, 0.4)" stroke-width="8"
+                stroke-linecap="round" />
+              <path d="M10,20 C50,110 110,120 170,50" fill="none" stroke="rgba(211, 47, 47, 0.6)" stroke-width="14"
+                stroke-linecap="round" />
+              <path d="M15,25 C55,115 115,125 175,55" fill="none" stroke="rgba(211, 47, 47, 0.3)" stroke-width="6"
+                stroke-linecap="round" />
+
+              <!-- Небрежный наконечник -->
+              <path d="M140,40 L185,55 L155,85" fill="none" stroke="rgba(211, 47, 47, 0.6)" stroke-width="12"
+                stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M145,45 L175,52 L160,75" fill="none" stroke="rgba(211, 47, 47, 0.4)" stroke-width="10"
+                stroke-linecap="round" stroke-linejoin="round" />
+
+              <!-- Пара быстрых штрихов для акцента -->
+              <path d="M170,45 L190,40" fill="none" stroke="rgba(211, 47, 47, 0.5)" stroke-width="4"
+                stroke-linecap="round" />
             </svg>
             <span class="arrow-label">it's me</span>
           </div>
+
+          <!-- Цитата под стрелкой -->
+          <div class="hero-quote">
+            <span data-scribble="true" data-scribble-type="underline" data-scribble-color="rgba(30, 30, 30, 0.3)"
+              data-scribble-passes="2" data-scribble-jitter="10">
+              Как прихватит,<br> так и сделаю
+            </span>
+            <div class="quote-heart" data-scribble="true" data-scribble-type="heart"
+              data-scribble-color="rgba(211, 47, 47, 0.6)" data-scribble-passes="2" data-scribble-jitter="5"></div>
+          </div>
+        </div>
+
+        <!-- Длинная синяя стрелка (карандаш) -->
+        <div class="blue-pencil-arrow">
+          <svg width="400" height="500" viewBox="0 0 400 500"
+            style="overflow: visible; mix-blend-mode: multiply; filter: url(#rough-edge);">
+            <!-- Основной путь (несколько тонких карандашных линий) -->
+            <path class="p-line" d="M20,10 C150,30 380,100 250,350 L255,420" fill="none" stroke="rgba(0, 100, 255, 0.4)"
+              stroke-width="3" stroke-linecap="round" />
+            <path class="p-line" d="M25,12 C160,35 370,110 245,345 L250,415" fill="none"
+              stroke="rgba(0, 100, 255, 0.25)" stroke-width="2" stroke-linecap="round" />
+            <path class="p-line" d="M18,8 C145,28 390,95 255,355 L260,425" fill="none" stroke="rgba(0, 100, 255, 0.3)"
+              stroke-width="1.5" stroke-linecap="round" />
+
+            <!-- Наконечник стрелки (тоже небрежный карандаш) -->
+            <path d="M230,390 L255,425 L285,400" fill="none" stroke="rgba(0, 100, 255, 0.5)" stroke-width="3.5"
+              stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M235,395 L252,420 L275,405" fill="none" stroke="rgba(0, 100, 255, 0.3)" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round" />
+          </svg>
         </div>
 
         <div class="hero-center-doodles">
           <!-- Абстрактные штрихи и каракули через нашу систему -->
-          <div class="doodle d-shading" data-scribble="true" data-scribble-type="fill" data-scribble-passes="1" data-scribble-step="25" data-scribble-jitter="30" data-scribble-color="rgba(30,30,30,0.15)"></div>
-          <div class="doodle d-box" data-scribble="true" data-scribble-type="box" data-scribble-passes="2" data-scribble-jitter="15" data-scribble-color="rgba(30,30,30,0.2)"></div>
-          <div class="doodle d-line" data-scribble="true" data-scribble-type="underline" data-scribble-passes="8" data-scribble-jitter="25" data-scribble-color="rgba(211,47,47,0.2)" data-scribble-width="1.5"></div>
-          <div class="doodle d-star" data-scribble="true" data-scribble-type="underline" data-scribble-passes="3" data-scribble-jitter="10" data-scribble-color="rgba(30,30,30,0.3)" data-scribble-angle="45"></div>
-          <div class="doodle d-star-alt" data-scribble="true" data-scribble-type="underline" data-scribble-passes="3" data-scribble-jitter="10" data-scribble-color="rgba(30,30,30,0.3)" data-scribble-angle="-45"></div>
+          <div class="doodle d-shading" data-scribble="true" data-scribble-type="fill" data-scribble-passes="1"
+            data-scribble-step="25" data-scribble-jitter="30" data-scribble-color="rgba(30,30,30,0.15)"></div>
+          <div class="doodle d-box" data-scribble="true" data-scribble-type="box" data-scribble-passes="2"
+            data-scribble-jitter="15" data-scribble-color="rgba(30,30,30,0.2)"></div>
+          <div class="doodle d-line" data-scribble="true" data-scribble-type="underline" data-scribble-passes="8"
+            data-scribble-jitter="25" data-scribble-color="rgba(211,47,47,0.2)" data-scribble-width="1.5"></div>
+          <div class="doodle d-star" data-scribble="true" data-scribble-type="underline" data-scribble-passes="3"
+            data-scribble-jitter="10" data-scribble-color="rgba(30,30,30,0.3)" data-scribble-angle="45"></div>
+          <div class="doodle d-star-alt" data-scribble="true" data-scribble-type="underline" data-scribble-passes="3"
+            data-scribble-jitter="10" data-scribble-color="rgba(30,30,30,0.3)" data-scribble-angle="-45"></div>
         </div>
 
         <!-- Правая часть: Аватарка (рисунок карандашом) -->
         <div class="hero-right">
           <div class="avatar-block">
+            <!-- Синее сердечко рядом с картинкой -->
+            <div class="avatar-heart" data-scribble="true" data-scribble-type="heart"
+              data-scribble-color="rgba(0, 100, 255, 0.5)" data-scribble-passes="2" data-scribble-jitter="5"></div>
+
             <img src="images/ava.png" alt="Desaichk Avatar" class="pencil-avatar">
-            
+
             <!-- Скотч по краям (как будто кусок со скетчем приклеен к листу) -->
             <div class="tape tape-top"></div>
             <div class="tape tape-bottom"></div>
@@ -97,8 +221,256 @@
 
       </div>
 
-      <!-- Место для прокрутки -->
-      <div style="height: 100vh;"></div>
+      <!-- SELECTED WORK / PINNED FRAGMENTS -->
+      <section class="works-fragments" id="projects">
+        <div class="works-title">
+          <span data-scribble="true" data-scribble-type="underline" data-scribble-color="rgba(30,30,30,0.45)"
+            data-scribble-stroke="3" data-scribble-passes="3" data-scribble-jitter="14">
+            selected work
+          </span>
+          <small>pinned fragments / not a clean showcase</small>
+        </div>
+
+        <!-- Зеленая карандашная карта связей -->
+        <div class="works-connector-map">
+          <svg viewBox="0 0 1400 900" preserveAspectRatio="none">
+            <!-- От заголовка selected work к узлу -->
+
+            <!-- Центральный узел между карточками -->
+            <g class="connector-node" transform="translate(690 325)">
+
+              <!-- маленькая звезда внутри круга, чтобы было не просто стерильное кольцо -->
+              <path class="node-star" d="M0,-17 L5,-5 L18,-5 L8,3 L12,16 L0,9 L-12,16 L-8,3 L-18,-5 L-5,-5 Z" />
+            </g>
+
+            <!-- Ветка к ChromaSync -->
+            <path class="green-pencil-line branch-line" d="M690,325 C595,350 500,385 410,445" />
+            <path class="green-pencil-line ghost" d="M697,332 C600,358 505,392 417,452" />
+
+            <!-- Ветка к Task Manager -->
+            <path class="green-pencil-line branch-line" d="M690,325 C800,285 900,265 1045,305" />
+            <path class="green-pencil-line ghost" d="M698,331 C808,292 908,272 1052,312" />
+
+            <!-- Ветка к Server / Network -->
+            <path class="green-pencil-line branch-line" d="M690,325 C785,430 860,555 935,695" />
+            <path class="green-pencil-line ghost" d="M682,332 C778,438 852,563 928,700" />
+
+            <!-- Быстрые штрихи возле узла -->
+            <path class="green-pencil-tick" d="M635,292 L612,276" />
+            <path class="green-pencil-tick" d="M745,292 L772,274" />
+            <path class="green-pencil-tick" d="M690,375 L684,405" />
+          </svg>
+        </div>
+
+        <!-- Главный приколотый фрагмент -->
+        <article class="fragment-card fragment-main">
+          <div class="fragment-tape tape-a"></div>
+          <div class="fragment-corner-pin" data-scribble="true" data-scribble-type="box"
+            data-scribble-color="rgba(211,47,47,0.5)" data-scribble-passes="2" data-scribble-jitter="12"></div>
+
+          <div class="fragment-index">fragment 01</div>
+          <h2>ChromaSync</h2>
+
+          <p class="fragment-desc">
+            theme engine / desktop music interface / color sync experiments / YM hack
+          </p>
+
+          <div class="fragment-meta">
+            <span>JS</span>
+            <span>CSS</span>
+            <span>WASM</span>
+            <span>app.asar</span>
+          </div>
+
+          <p class="fragment-note marker-blue">
+            main product experiment
+          </p>
+        </article>
+
+        <!-- Маленький фрагмент сбоку -->
+        <article class="fragment-card fragment-small fragment-task">
+          <div class="fragment-tape tape-b"></div>
+          <div class="fragment-index">fragment 02</div>
+          <h3>Task Manager Rebuild</h3>
+          <p>C++ backend / Electron UI / process charts</p>
+          <span class="fragment-state">desktop systems</span>
+        </article>
+
+        <!-- Фрагмент как техническая записка -->
+        <article class="fragment-card fragment-note-card fragment-network">
+          <div class="fragment-index">field note</div>
+          <h3>Server / Network</h3>
+          <p>VPN, Nginx, TLS, Xray, CDN tests, broken configs, fixed configs.</p>
+          <div class="mini-flow">
+            <span>logs</span>
+            <b>→</b>
+            <span>hypothesis</span>
+            <b>→</b>
+            <span>fix</span>
+          </div>
+        </article>
+
+        <!-- Нижняя грязная подпись -->
+        <div class="works-scratch" data-scribble="true" data-scribble-type="fill"
+          data-scribble-color="rgba(30,30,30,0.12)" data-scribble-passes="2" data-scribble-step="18"
+          data-scribble-jitter="28">
+          not everything deserves a clean card
+        </div>
+
+        <!-- Красная пометка -->
+        <div class="works-red-note">
+          <span data-scribble="true" data-scribble-type="underline" data-scribble-color="rgba(211,47,47,0.55)"
+            data-scribble-stroke="5" data-scribble-passes="2" data-scribble-jitter="18">
+            shipped / rebuilt / still messy
+          </span>
+        </div>
+      </section>
+      <!-- CONTACT / LETTER FORM -->
+      <section class="contact-letter-section" id="contact">
+        <div class="letter-shadow-note">
+          <span data-scribble="true" data-scribble-type="underline" data-scribble-color="rgba(32,128,72,0.45)"
+            data-scribble-stroke="4" data-scribble-passes="2" data-scribble-jitter="16">
+            write me a letter
+          </span>
+        </div>
+
+        <div class="letter-shadow-note2">
+          <span data-scribble="true" data-scribble-type="underline" data-scribble-color="rgba(0, 150, 255, 0.3)"
+            data-scribble-stroke="5" data-scribble-passes="2" data-scribble-jitter="16">
+            or nope
+          </span>
+        </div>
+
+        <form class="letter-form">
+          <div class="letter-tape letter-tape-left"></div>
+          <div class="letter-tape letter-tape-right"></div>
+
+          <div class="letter-stamp">
+            <span>POST</span>
+            <small>EK</small>
+          </div>
+
+          <div class="letter-header">
+            <div class="letter-field letter-date">
+              <label>date</label>
+              <input type="text" name="date" value="today" aria-label="date">
+            </div>
+
+            <div class="letter-field letter-to">
+              <label>to</label>
+              <input type="text" name="to" value="Desaichk" aria-label="to">
+            </div>
+          </div>
+
+          <div class="letter-row">
+            <div class="letter-field">
+              <label>from</label>
+              <input type="text" name="name" placeholder="your name">
+            </div>
+
+            <div class="letter-field">
+              <label>contact</label>
+              <input type="email" name="email" placeholder="your@email.com">
+            </div>
+          </div>
+
+          <div class="letter-field letter-subject">
+            <label>subject</label>
+            <input type="text" name="subject" placeholder="interesting task / project / idea">
+          </div>
+
+          <div class="letter-field letter-message">
+            <label>message</label>
+            <textarea name="message" placeholder="Напиши, что нужно сделать, обсудить или собрать..."></textarea>
+          </div>
+
+          <div class="letter-footer">
+            <div class="letter-signature">
+              <span>signature:</span>
+              <strong>______________</strong>
+            </div>
+
+            <button type="submit" class="letter-send">
+              send letter
+            </button>
+          </div>
+
+          <div class="letter-red-note">
+            <span data-scribble="true" data-scribble-type="underline" data-scribble-color="rgba(211,47,47,0.55)"
+              data-scribble-stroke="5" data-scribble-passes="2" data-scribble-jitter="18">
+              no spam / only real stuff
+            </span>
+          </div>
+        </form>
+
+        <div class="contact-tear-tabs">
+          <a href="https://github.com/Desai0" target="_blank" rel="noopener">github</a>
+          <a href="https://t.me/desaichk" target="_blank" rel="telegram">telegram</a>
+          <a href="mailto:kolobokevgenij83@gmail.com">mail</a>
+        </div>
+      </section>
+      <!-- Декоративные элементы вокруг письма -->
+      <div class="letter-deco-layer">
+
+        <!-- Красное сердечко сверху-слева -->
+        <div class="ldeco ldeco-heart-1" data-scribble="true" data-scribble-type="heart"
+          data-scribble-color="rgba(211,47,47,0.5)" data-scribble-passes="2" data-scribble-jitter="6"></div>
+
+        <!-- Синее сердечко справа -->
+        <div class="ldeco ldeco-heart-2" data-scribble="true" data-scribble-type="heart"
+          data-scribble-color="rgba(0,100,255,0.35)" data-scribble-passes="2" data-scribble-jitter="5"></div>
+
+        <!-- Зелёный кружок -->
+        <div class="ldeco ldeco-circle-1" data-scribble="true" data-scribble-type="circle"
+          data-scribble-color="rgba(30,160,60,0.35)" data-scribble-passes="2" data-scribble-jitter="7" data-scribble-stroke="1.5"></div>
+
+        <!-- Звёздочка слева снизу -->
+        <div class="ldeco ldeco-star-1" data-scribble="true" data-scribble-type="star"
+          data-scribble-color="rgba(200,140,0,0.4)" data-scribble-passes="1" data-scribble-jitter="6"
+          data-scribble-angle="15"></div>
+
+        <!-- Ещё одна маленькая звёздочка справа -->
+        <div class="ldeco ldeco-star-2" data-scribble="true" data-scribble-type="star"
+          data-scribble-color="rgba(211,47,47,0.3)" data-scribble-passes="1" data-scribble-jitter="5"
+          data-scribble-angle="-20"></div>
+
+        <!-- Красная стрелка указывает на форму (SVG) -->
+        <svg class="ldeco ldeco-arrow-1" viewBox="0 0 120 90" style="overflow:visible;mix-blend-mode:multiply;filter:url(#rough-edge);">
+          <path d="M10,60 C50,80 80,20 105,30" fill="none" stroke="rgba(211,47,47,0.5)" stroke-width="10" stroke-linecap="round"/>
+          <path d="M12,62 C52,82 82,22 107,32" fill="none" stroke="rgba(211,47,47,0.3)" stroke-width="5" stroke-linecap="round"/>
+          <path d="M90,15 L108,32 L88,42" fill="none" stroke="rgba(211,47,47,0.55)" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
+          <path d="M92,17 L106,30 L90,38" fill="none" stroke="rgba(211,47,47,0.3)" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+
+        <!-- Синяя карандашная стрелка снизу-справа -->
+        <svg class="ldeco ldeco-arrow-2" viewBox="0 0 100 130" style="overflow:visible;mix-blend-mode:multiply;filter:url(#pencil-line);">
+          <path d="M50,10 C30,50 60,90 40,120" fill="none" stroke="rgba(0,100,255,0.4)" stroke-width="3" stroke-linecap="round"/>
+          <path d="M52,12 C32,52 62,92 42,122" fill="none" stroke="rgba(0,100,255,0.2)" stroke-width="1.5" stroke-linecap="round"/>
+          <path d="M25,108 L40,125 L58,112" fill="none" stroke="rgba(0,100,255,0.4)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+
+        <!-- Штрихи карандашом (простые засечки) -->
+        <svg class="ldeco ldeco-ticks" viewBox="0 0 80 60" style="overflow:visible;mix-blend-mode:multiply;filter:url(#rough-edge);">
+          <path d="M5,10 L30,5" stroke="rgba(50,50,50,0.3)" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M8,22 L28,18" stroke="rgba(50,50,50,0.2)" stroke-width="2" stroke-linecap="round"/>
+          <path d="M3,35 L32,30" stroke="rgba(50,50,50,0.3)" stroke-width="2.5" stroke-linecap="round"/>
+          <path d="M10,48 L26,44" stroke="rgba(50,50,50,0.15)" stroke-width="2" stroke-linecap="round"/>
+          <path d="M50,8 L72,12" stroke="rgba(50,50,50,0.25)" stroke-width="2" stroke-linecap="round"/>
+          <path d="M48,22 L70,26" stroke="rgba(50,50,50,0.2)" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+
+        <!-- Каракуль "send!" -->
+        <div class="ldeco ldeco-send-label">
+          <span data-scribble="true" data-scribble-type="underline" data-scribble-color="rgba(211,47,47,0.4)"
+            data-scribble-stroke="3" data-scribble-passes="2" data-scribble-jitter="12">send!</span>
+        </div>
+
+        <!-- Маленький зелёный кружок снизу -->
+        <div class="ldeco ldeco-circle-2" data-scribble="true" data-scribble-type="circle"
+          data-scribble-color="rgba(30,160,60,0.25)" data-scribble-passes="3" data-scribble-jitter="9" data-scribble-stroke="1.2"></div>
+
+      </div>
+      <div style="height: 40vh;"></div>
     </main>
   </div>
 
