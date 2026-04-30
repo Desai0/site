@@ -1,152 +1,129 @@
-# Desaichk Portfolio — Developer Showcase
+# Desaichk Portfolio
 
-Современный портфель веб-разработчика с живыми эффектами, интерактивными элементами и скрытым терминалом.
+Одностраничное портфолио с кастомной “бумажной” версткой, декоративной SVG-графикой и realtime-синхронизацией курсоров через SpaceTimeDB.
 
-## 📋 Структура проекта
+## Стек
 
+- `HTML`, `CSS`, `Vanilla JS`
+- `TypeScript` для client-side realtime слоя
+- `Vite` для сборки фронтенда
+- `SpaceTimeDB` для синхронизации курсоров
+
+## Структура проекта
+
+```text
+site/
+├── index.html                    # Основная страница
+├── style.css                     # Основные стили
+├── script.js                     # Декоративная и UI-логика страницы
+├── src/
+│   ├── cursor-sync.ts            # Realtime-синхронизация курсоров
+│   └── module_bindings/          # Сгенерированные SpaceTimeDB bindings
+├── spacetimedb/
+│   ├── spacetime.json            # Конфиг SpaceTimeDB
+│   ├── spacetime.local.json      # Локальная база SpaceTimeDB
+│   └── spacetimedb/
+│       └── src/index.ts          # Серверный модуль курсоров
+├── images/                       # Изображения
+├── deploy/
+│   └── nginx-site.conf           # Пример nginx-конфига
+├── DEPLOY_VPS.md                 # Заметки по деплою на VPS
+└── package.json
 ```
-desai-portfolio/
-├── index.html         # Главная страница (Hero, Projects, Skills, About, Contact)
-├── about.html         # Страница "О мне" с таблицей технологий и setup
-├── contacts.html      # Страница контактов с функциональной формой
-├── style.css          # Полный стиль (100+ KB, Flexbox, Grid, Media Queries)
-├── script.js          # Основной скрипт (Canvas, анимации, интерактивность)
-├── terminal.js        # Скрытый пасхальный терминал (Ctrl+`)
-├── images/            # Папка для изображений проектов (опционально)
-└── README.md          # Этот файл
-```
 
-## ✨ Возможности
+## Возможности
 
-### 🎨 ChromaSync эффект
-- Живой Canvas-фон с 6 цветовыми палитрами
-- Плавная смена цветов при переключении трека
-- Пульсирующие blob'и, частицы и сканирующие линии
-- Интерактивный плеер с автопрокруткой
+- скетч-стилизация страницы под лист блокнота;
+- SVG-фильтры, декоративные штрихи и рукописные элементы;
+- контактная форма через `mailto:`;
+- синхронизация курсоров пользователей между клиентами;
+- production-сборка фронтенда через Vite.
 
-### 🎯 Интерактивность
-- Пользовательский стилизованный курсор (меняет цвет с палитрой)
-- Typing effect — автоматическое печатание фраз
-- 3D tilt эффект на карточках проектов
-- Parallax эффект на hero-визуале
-- Плавные hover-эффекты и переходы
+## Установка
 
-### 📱 Адаптивность
-- Media Queries для экранов: 1100px, 900px, 600px
-- Flexbox + Grid для гибкой раскладки
-- Относительные единицы (%, em, rem, vw, vh)
-- clamp() для масштабируемых шрифтов
-
-### 🎭 Пасхалка — Терминал
-Нажми `Ctrl + `` для скрытого терминала с 30+ командами:
 ```bash
-> help              # Показать все команды
-> about             # Информация о разработчике
-> projects          # Список проектов
-> skills            # Стек технологий
-> chromasync        # Подробно о ChromaSync
-> neuro             # CR Neuro AI bot
-> palette           # Переключить цвет
-> matrix            # 🐇 Матричный дождь
-> hire              # Нанять разработчика
-> git log           # История коммитов
-> arch              # I use Arch btw
+npm install
 ```
 
-## 🎓 Соответствие HTML5/CSS3 Руководству
+## Локальная разработка
 
-| Раздел | Требование | Статус |
-|--------|-----------|--------|
-| 1-2 | HTML структура | ✅ Выполнено |
-| 3 | Заголовки и текст | ✅ Выполнено |
-| 4 | Списки и ссылки | ✅ Выполнено |
-| 5 | Изображения и таблицы | ✅ Выполнено (table в about.html) |
-| 6 | Семантический HTML5 | ✅ Выполнено |
-| 7 | Введение в CSS | ✅ Выполнено |
-| 8 | Цвета и шрифты | ✅ Выполнено |
-| 9 | Блочная модель | ✅ Выполнено |
-| 10 | Позиционирование | ✅ Выполнено |
-| 11-12 | Flexbox | ✅ Выполнено |
-| 13 | CSS Grid | ✅ Выполнено |
-| 14 | Адаптивная верстка | ✅ Выполнено |
-| 15 | Анимации и переходы | ✅ Выполнено |
-| 16 | Формы | ✅ Выполнено (contacts.html) |
-| 17-18 | Финальная проверка | ✅ Выполнено |
+### 1. Поднять SpaceTimeDB локально
 
-## 🚀 Быстрый старт
+Если CLI уже установлен:
 
-1. **Откройте сайт:**
-   ```bash
-   # Windows
-   start index.html
+```bash
+spacetime start --listen-addr 127.0.0.1:3000
+```
 
-   # Mac
-   open index.html
+### 2. Опубликовать локальный модуль
 
-   # Linux
-   xdg-open index.html
-   ```
+```bash
+spacetime publish site-cursors --server local --module-path spacetimedb/spacetimedb
+```
 
-2. **Изучите страницы:**
-   - `index.html` — главная (projects, skills, контакты в footer)
-   - `about.html` — о разработчике и его setup
-   - `contacts.html` — контактная форма
+### 3. Перегенерировать bindings при изменении схемы
 
-3. **Откройте терминал:**
-   - Нажми `Ctrl + `` (Ctrl + backtick)
-   - Введи `help` для справки
-   - Попробуй `matrix`, `arch`, `neuro`, `palette`
+```bash
+spacetime generate --lang typescript --out-dir src/module_bindings --module-path spacetimedb/spacetimedb
+```
 
-## 🛠️ Технологии
+### 4. Запустить фронтенд
 
-### Frontend
-- **HTML5** — Семантическая разметка
-- **CSS3** — Flexbox, Grid, Media Queries, Animations, Transforms
-- **Vanilla JavaScript** — Без фреймворков (Canvas, Web APIs)
+```bash
+npm run dev
+```
 
-### Возможности JavaScript
-- Canvas API — Живой фон с частицами
-- Web Audio API готов (в демо используется визуальная демонстрация)
-- IntersectionObserver — Scroll reveal анимации
-- MutationObserver-подобная логика для динамических обновлений
+По умолчанию:
 
-### Дизайн
-- **Google Fonts** — JetBrains Mono, Inter
-- **CSS-переменные** — Для динамических палитр
-- **CSS-функции** — clamp(), calc(), var()
-- **SVG курсоры** — Вместо растровых изображений
+- фронтенд: `http://127.0.0.1:5173`
+- локальный SpaceTimeDB: `ws://127.0.0.1:3000`
 
-## 📊 Статистика кода
+## Production build
 
-- HTML: ~700 строк (3 файла)
-- CSS: ~1200 строк (1 файл)
-- JavaScript: ~360 строк (2 основных файла)
-- **Всего:** ~2260 строк без зависимостей
+```bash
+npm run build
+```
 
-## 🎯 Преимущества подхода
+Готовая статика будет в `dist/`.
 
-✅ **Нет внешних зависимостей** — Чистый HTML/CSS/JS
-✅ **Быстро загружается** — ~100 KB всего
-✅ **Адаптивен** — Работает на всех устройствах
-✅ **Семантичен** — Правильная HTML5 структура
-✅ **Доступен** — Хороший контраст, alt-атрибуты
-✅ **SEO-оптимизирован** — Правильные заголовки, meta-теги
-✅ **Интерактивен** — Живые анимации без фреймворков
+## SpaceTimeDB Maincloud
 
-## 📱 Версия для мобильных
+Публикация модуля в Maincloud:
 
-Сайт полностью адаптирован:
-- Навигация переформатируется на мобильных
-- Projects grid → 1 колонка на 600px экранах
-- Форма на contacts.html оптимизирована для touch
-- Все интерактивные элементы имеют достаточный размер (48px+)
+```bash
+spacetime login
+spacetime publish site-cursors --server maincloud --module-path spacetimedb/spacetimedb
+```
 
-## 🔗 Ссылки
+Текущие production env-переменные:
 
-- **GitHub:** https://github.com/Desai0
-- **Telegram:** https://t.me/desaichk
-- **Email:** kolobokevgenij83@gmail.com
+```env
+VITE_SPACETIMEDB_HOST=https://maincloud.spacetimedb.com
+VITE_SPACETIMEDB_DB_NAME=site-cursors
+```
 
-## 📜 Лицензия
+Они лежат в `.env.production`.
 
-Свободно использовать в образовательных целях. © Desaichk 2026
+## Деплой на VPS
+
+Для VPS используется только собранная статика из `dist/`. Realtime backend живет в SpaceTimeDB Maincloud.
+
+Базовый порядок:
+
+```bash
+npm run build
+```
+
+После этого:
+
+- загрузить `dist/` на сервер;
+- настроить `root` в nginx на каталог со статикой;
+- перезагрузить nginx.
+
+Подробности: [DEPLOY_VPS.md](DEPLOY_VPS.md)
+
+## Важно
+
+- `src/module_bindings/` — сгенерированные файлы, вручную их не редактировать;
+- при изменении `spacetimedb/spacetimedb/src/index.ts` нужно заново делать `publish` и `generate`;
+- локальная папка `.spacetimedb-data/` в git не хранится.
