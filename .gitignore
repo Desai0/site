@@ -1,0 +1,4 @@
+node_modules/
+dist/
+.spacetimedb-data/
+spacetimedb/spacetimedb/node_modules/

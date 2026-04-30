@@ -1401,3 +1401,45 @@ button,
     color: rgba(211, 47, 47, 0.85);
     transform: translateY(12px) rotate(-1deg);
 }
+
+.spacetime-cursors-layer {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 260;
+    overflow: hidden;
+}
+
+.remote-cursor {
+    position: absolute;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transform: translate(-50%, -50%);
+    will-change: left, top;
+}
+
+.remote-cursor-dot {
+    width: 14px;
+    height: 14px;
+    border-radius: 50%;
+    border: 2px solid rgba(255, 255, 255, 0.9);
+    flex: 0 0 auto;
+}
+
+.remote-cursor-label {
+    display: inline-flex;
+    align-items: center;
+    min-height: 28px;
+    padding: 4px 10px;
+    border: 1px solid rgba(30, 30, 30, 0.14);
+    border-radius: 999px;
+    background: rgba(252, 248, 236, 0.92);
+    color: rgba(30, 30, 30, 0.85);
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+    font-family: "JetBrains Mono", monospace;
+    font-size: 0.75rem;
+    line-height: 1;
+    backdrop-filter: blur(4px);
+    white-space: nowrap;
+}
