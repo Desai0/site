@@ -5,8 +5,8 @@
 import { type Identity } from 'spacetimedb';
 import { DbConnection, tables, type ErrorContext } from './module_bindings';
 
-const HOST = import.meta.env.VITE_SPACETIMEDB_HOST ?? 'ws://127.0.0.1:3000';
-const DB_NAME = import.meta.env.VITE_SPACETIMEDB_DB_NAME ?? 'site-cursors';
+const HOST = import.meta.env.VITE_SPACETIMEDB_HOST || 'https://maincloud.spacetimedb.com';
+const DB_NAME = import.meta.env.VITE_SPACETIMEDB_DB_NAME || 'site-cursors';
 const TOKEN_KEY = `stdb:${DB_NAME}:auth-token`;
 const COLOR_KEY = `stdb:${DB_NAME}:cursor-color`;
 const PAGE_KEY = getPageKey();
@@ -174,6 +174,16 @@ function initCursorSync(container: HTMLElement) {
     })
     .onConnectError((_ctx: ErrorContext, error: Error) => {
       console.warn('SpaceTimeDB connection error:', error.message);
+
+      // If token is invalid or expired, clear it and reload to get a new one
+      if (error.message.includes('Unauthorized') || error.message.includes('Failed to verify token')) {
+        console.log('Clearing invalid SpacetimeDB token...');
+        localStorage.removeItem(TOKEN_KEY);
+        // Add a small delay to avoid rapid reload loops if something else is wrong
+        setTimeout(() => {
+          window.location.reload();
+        }, 1000);
+      }
     })
     .build();
 }
