@@ -17,4 +17,5 @@ export default __t.row({
   x: __t.f32(),
   y: __t.f32(),
   color: __t.string(),
+  isRightMouse: __t.bool().name("is_right_mouse"),
 });

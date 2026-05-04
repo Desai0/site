@@ -5,14 +5,14 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && node scripts/postbuild.mjs",
     "preview": "vite preview",
     "spacetime:generate": "spacetime generate --lang typescript --out-dir src/module_bindings --module-path spacetimedb/spacetimedb",
     "spacetime:publish:local": "spacetime publish site-cursors --module-path spacetimedb/spacetimedb --server local",
     "spacetime:publish": "spacetime publish site-cursors --module-path spacetimedb/spacetimedb --server maincloud"
   },
   "dependencies": {
-    "spacetimedb": "^2.1.0"
+    "spacetimedb": "2.0.0"
   },
   "devDependencies": {
     "typescript": "~5.6.2",

@@ -12,6 +12,7 @@ const cursor = table(
     x: t.f32(),
     y: t.f32(),
     color: t.string(),
+    isRightMouse: t.bool(),
   }
 );
 
@@ -37,6 +38,7 @@ export const onConnect = spacetimedb.clientConnected(ctx => {
     x: 0,
     y: 0,
     color: DEFAULT_COLOR,
+    isRightMouse: false,
   });
 });
 
@@ -54,8 +56,9 @@ export const update_cursor = spacetimedb.reducer(
     x: t.f32(),
     y: t.f32(),
     color: t.string().optional(),
+    isRightMouse: t.bool(),
   },
-  (ctx, { page, x, y, color }) => {
+  (ctx, { page, x, y, color, isRightMouse }) => {
     if (ctx.connectionId === null) {
       throw new SenderError('Connection id is required to update cursor state.');
     }
@@ -71,6 +74,7 @@ export const update_cursor = spacetimedb.reducer(
       x,
       y,
       color: color ?? existing.color,
+      isRightMouse,
     });
   }
 );

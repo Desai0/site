@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Desaichk — Track Requests</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+  <svg style="position: absolute; width: 0; height: 0; pointer-events: none;">
+    <filter id="rough-edge" x="-20%" y="-20%" width="140%" height="140%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.08" numOctaves="3" result="noise" />
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="4" xChannelSelector="R" yChannelSelector="G" />
+    </filter>
+    <filter id="pencil-line" x="-5%" y="-1%" width="110%" height="102%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.04 0.01" numOctaves="3" result="noise" />
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="3" xChannelSelector="R" yChannelSelector="G" />
+    </filter>
+  </svg>
+
+  <div class="notebook-page track-page-shell">
+    <svg class="side-wave side-wave-left" viewBox="0 0 60 3000" preserveAspectRatio="none"
+      style="position:absolute;top:0;left:30px;width:60px;height:100%;pointer-events:none;z-index:0;overflow:visible;">
+      <path
+        d="M30,0 C45,150 15,300 30,450 C45,600 15,750 30,900 C45,1050 15,1200 30,1350 C45,1500 15,1650 30,1800 C45,1950 15,2100 30,2250 C45,2400 15,2550 30,2700 C45,2850 15,3000 30,3000"
+        fill="none" stroke="rgba(200,40,40,0.45)" stroke-width="2.5" stroke-linecap="round"
+        filter="url(#pencil-line)" />
+      <path
+        d="M32,0 C47,150 17,300 32,450 C47,600 17,750 32,900 C47,1050 17,1200 32,1350 C47,1500 17,1650 32,1800 C47,1950 17,2100 32,2250 C47,2400 17,2550 32,2700 C47,2850 17,3000 32,3000"
+        fill="none" stroke="rgba(200,40,40,0.25)" stroke-width="1.2" stroke-linecap="round"
+        filter="url(#pencil-line)" />
+      <path
+        d="M28,0 C43,150 13,300 28,450 C43,600 13,750 28,900 C43,1050 13,1200 28,1350 C43,1500 13,1650 28,1800 C43,1950 13,2100 28,2250 C43,2400 13,2550 28,2700 C43,2850 13,3000 28,3000"
+        fill="none" stroke="rgba(200,40,40,0.15)" stroke-width="4" stroke-linecap="round" filter="url(#pencil-line)" />
+    </svg>
+
+    <svg class="side-wave side-wave-right" viewBox="0 0 60 3000" preserveAspectRatio="none"
+      style="position:absolute;top:0;right:0;width:60px;height:100%;pointer-events:none;z-index:0;overflow:visible;">
+      <path
+        d="M30,0 C15,150 45,300 30,450 C15,600 45,750 30,900 C15,1050 45,1200 30,1350 C15,1500 45,1650 30,1800 C15,1950 45,2100 30,2250 C15,2400 45,2550 30,2700 C15,2850 45,3000 30,3000"
+        fill="none" stroke="rgba(200,40,40,0.45)" stroke-width="2.5" stroke-linecap="round"
+        filter="url(#pencil-line)" />
+      <path
+        d="M28,0 C13,150 43,300 28,450 C13,600 43,750 28,900 C13,1050 43,1200 28,1350 C13,1500 43,1650 28,1800 C13,1950 43,2100 28,2250 C13,2400 43,2550 28,2700 C13,2850 43,3000 28,3000"
+        fill="none" stroke="rgba(200,40,40,0.25)" stroke-width="1.2" stroke-linecap="round"
+        filter="url(#pencil-line)" />
+      <path
+        d="M32,0 C17,150 47,300 32,450 C17,600 47,750 32,900 C17,1050 47,1200 32,1350 C17,1500 47,1650 32,1800 C17,1950 47,2100 32,2250 C17,2400 47,2550 32,2700 C17,2850 47,3000 32,3000"
+        fill="none" stroke="rgba(200,40,40,0.15)" stroke-width="4" stroke-linecap="round" filter="url(#pencil-line)" />
+    </svg>
+
+    <div class="spirals"></div>
+    <div class="dot-grid"></div>
+    <div class="binding-shadow"></div>
+    <div class="paper-texture"></div>
+
+    <header class="rolled-header">
+      <div class="header-flat">
+        <div class="logo-sketch">EK</div>
+        <nav class="nav-sketch">
+          <a href="./index.html" class="nav-item"><span class="checkbox">[ ]</span> главная</a>
+          <a href="#track-submit" class="nav-item"><span class="checkbox">[ ]</span> отправка</a>
+          <a href="#track-lookup" class="nav-item"><span class="checkbox">[ ]</span> поиск</a>
+          <a href="#track-flow" class="nav-item"><span class="checkbox">[ ]</span> схема</a>
+        </nav>
+      </div>
+      <div class="header-roll" id="paperRoll"></div>
+    </header>
+
+    <main class="page-content track-page-content">
+      <section class="track-intro">
+        <div class="track-intro-copy">
+          <p class="track-kicker">
+            <span data-scribble="true" data-scribble-type="underline"
+              data-scribble-color="rgba(30, 30, 30, 0.45)" data-scribble-stroke="3" data-scribble-passes="3"
+              data-scribble-jitter="14">track intake / lookup desk</span>
+          </p>
+          <h1>track relay page</h1>
+          <p class="track-intro-text">
+            пользователь оставляет трек, фронт шлет заявку серверу, потом по id можно спросить уже
+            найденную ссылку на скачивание.
+          </p>
+        </div>
+
+        <div class="track-intro-note">
+          <div class="fragment-index">frontend only</div>
+          <p>Форма и запросы уже готовы под API. Пока backend не поднят, интерфейс покажет транспортные ошибки как есть.</p>
+        </div>
+      </section>
+
+      <section class="track-flow-board" id="track-flow">
+        <div class="track-flow-title">
+          <span data-scribble="true" data-scribble-type="underline"
+            data-scribble-color="rgba(32,128,72,0.45)" data-scribble-stroke="4" data-scribble-passes="2"
+            data-scribble-jitter="16">request flow</span>
+        </div>
+
+        <div class="track-flow-grid">
+          <article class="track-step-card">
+            <div class="fragment-index">step 01</div>
+            <h2>submit meta</h2>
+            <p>Название трека, исполнитель и исходная ссылка уходят в backend как заявка на поиск.</p>
+          </article>
+
+          <article class="track-step-card">
+            <div class="fragment-index">step 02</div>
+            <h2>server crawl</h2>
+            <p>Серверный скрипт ищет совпадения, сохраняет download link и связывает его с id записи.</p>
+          </article>
+
+          <article class="track-step-card">
+            <div class="fragment-index">step 03</div>
+            <h2>lookup by id</h2>
+            <p>Клиент шлет `id`, backend возвращает готовую ссылку и метаданные найденного трека.</p>
+          </article>
+        </div>
+      </section>
+
+      <section class="track-tools-grid">
+        <form class="track-paper-card track-submit-form" id="track-submit">
+          <div class="track-card-label">queue new track</div>
+          <h2>send request</h2>
+
+          <label class="track-field">
+            <span>track title</span>
+            <input type="text" name="title" placeholder="например: Around the World" required>
+          </label>
+
+          <label class="track-field">
+            <span>artist</span>
+            <input type="text" name="artist" placeholder="например: Daft Punk" required>
+          </label>
+
+          <label class="track-field">
+            <span>source link</span>
+            <input type="url" name="sourceLink" placeholder="https://..." required>
+          </label>
+
+          <button type="submit" class="track-action-button">submit to server</button>
+          <p class="track-form-hint">POST `/api/tracks/submit`</p>
+          <div class="track-response-box" data-role="submit-status">Ожидание отправки.</div>
+        </form>
+
+        <form class="track-paper-card track-lookup-form" id="track-lookup">
+          <div class="track-card-label">resolve track id</div>
+          <h2>get download link</h2>
+
+          <label class="track-field">
+            <span>track id</span>
+            <input type="text" name="trackId" placeholder="например: 128" required>
+          </label>
+
+          <button type="submit" class="track-action-button">request by id</button>
+          <p class="track-form-hint">GET `/api/tracks/:id`</p>
+
+          <div class="track-response-box" data-role="lookup-status">Ожидание запроса.</div>
+
+          <div class="track-result-card" hidden data-role="lookup-result">
+            <div class="fragment-index">server response</div>
+            <dl>
+              <div>
+                <dt>id</dt>
+                <dd data-field="id">-</dd>
+              </div>
+              <div>
+                <dt>track</dt>
+                <dd data-field="title">-</dd>
+              </div>
+              <div>
+                <dt>artist</dt>
+                <dd data-field="artist">-</dd>
+              </div>
+              <div>
+                <dt>status</dt>
+                <dd data-field="status">-</dd>
+              </div>
+              <div>
+                <dt>download</dt>
+                <dd><a href="#" target="_blank" rel="noopener" data-field="downloadUrl">-</a></dd>
+              </div>
+            </dl>
+          </div>
+        </form>
+      </section>
+
+      <div class="track-page-footer-note">
+        <span data-scribble="true" data-scribble-type="underline"
+          data-scribble-color="rgba(211,47,47,0.45)" data-scribble-stroke="4" data-scribble-passes="2"
+          data-scribble-jitter="16">frontend speaks to backend, but storage/search lives on server</span>
+      </div>
+    </main>
+  </div>
+
+  <script src="./script.js"></script>
+  <script type="module" src="/src/cursor-sync.ts"></script>
+  <script type="module" src="/src/track-page.ts"></script>
+</body>
+
+</html>

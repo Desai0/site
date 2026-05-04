@@ -5,12 +5,14 @@
 import { type Identity } from 'spacetimedb';
 import { DbConnection, tables, type ErrorContext } from './module_bindings';
 
-const HOST = import.meta.env.VITE_SPACETIMEDB_HOST ?? 'ws://127.0.0.1:3000';
-const DB_NAME = import.meta.env.VITE_SPACETIMEDB_DB_NAME ?? 'site-cursors';
-const TOKEN_KEY = `stdb:${DB_NAME}:auth-token`;
+const HOST = import.meta.env.VITE_SPACETIMEDB_HOST || 'https://maincloud.spacetimedb.com';
+const DB_NAME = import.meta.env.VITE_SPACETIMEDB_DB_NAME || 'site-cursors';
 const COLOR_KEY = `stdb:${DB_NAME}:cursor-color`;
 const PAGE_KEY = getPageKey();
 const SEND_INTERVAL_MS = 50;
+const ACTIVE_CURSOR_CLASS = 'remote-cursor-active';
+const REMOTE_STROKE_NORMAL_WIDTH = 0.8;
+const REMOTE_STROKE_RIGHT_WIDTH = 2;
 
 const surface = document.querySelector('.notebook-page') as HTMLElement | null;
 
@@ -19,26 +21,76 @@ if (surface) {
 }
 
 function initCursorSync(container: HTMLElement) {
+  const drawingCanvas = document.createElement('canvas');
+  drawingCanvas.className = 'remote-trail-canvas';
+  container.appendChild(drawingCanvas);
+
   const layer = document.createElement('div');
   layer.className = 'spacetime-cursors-layer';
   container.appendChild(layer);
 
   const cursorEls = new Map<string, HTMLDivElement>();
+  const lastRemotePoints = new Map<string, { x: number; y: number; page: string }>();
   const localColor = getOrCreateColor();
+  const drawingCtx = drawingCanvas.getContext('2d');
 
   let connection: DbConnection | null = null;
   let isConnected = false;
   let selfConnectionId = '';
   let lastSentAt = 0;
   let pendingTimer = 0;
-  let pendingPayload: { page: string; x: number; y: number; color: string } | null =
-    null;
+  let pendingPayload:
+    | { page: string; x: number; y: number; color: string; isRightMouse: boolean }
+    | null = null;
+
+  const resizeDrawingCanvas = () => {
+    const nextWidth = container.offsetWidth;
+    const nextHeight = container.offsetHeight;
+    if (!drawingCtx || nextWidth <= 0 || nextHeight <= 0) {
+      return;
+    }
+
+    drawingCanvas.width = nextWidth;
+    drawingCanvas.height = nextHeight;
+  };
+
+  resizeDrawingCanvas();
 
   const clearRemoteCursors = () => {
     for (const el of cursorEls.values()) {
       el.remove();
     }
     cursorEls.clear();
+    lastRemotePoints.clear();
+    if (drawingCtx) {
+      drawingCtx.clearRect(0, 0, drawingCanvas.width, drawingCanvas.height);
+    }
+  };
+
+  const drawRemoteSegment = (
+    fromX: number,
+    fromY: number,
+    toX: number,
+    toY: number,
+    color: string,
+    isRightMouse: boolean
+  ) => {
+    if (!drawingCtx) {
+      return;
+    }
+
+    drawingCtx.strokeStyle = isRightMouse
+      ? hexToAlpha(color, 0.4)
+      : 'rgba(50, 50, 50, 0.2)';
+    drawingCtx.lineWidth = isRightMouse
+      ? REMOTE_STROKE_RIGHT_WIDTH
+      : REMOTE_STROKE_NORMAL_WIDTH;
+    drawingCtx.lineCap = 'round';
+
+    drawingCtx.beginPath();
+    drawingCtx.moveTo(fromX * drawingCanvas.width, fromY * drawingCanvas.height);
+    drawingCtx.lineTo(toX * drawingCanvas.width, toY * drawingCanvas.height);
+    drawingCtx.stroke();
   };
 
   const updateCursorEl = (el: HTMLDivElement, color: string, label: string) => {
@@ -78,6 +130,9 @@ function initCursorSync(container: HTMLElement) {
     const clampedY = clamp(y, 0, 1);
     el.style.left = `${clampedX * 100}%`;
     el.style.top = `${clampedY * 100}%`;
+    el.classList.remove(ACTIVE_CURSOR_CLASS);
+    void el.offsetWidth;
+    el.classList.add(ACTIVE_CURSOR_CLASS);
   };
 
   const syncAll = () => {
@@ -91,12 +146,29 @@ function initCursorSync(container: HTMLElement) {
     for (const row of connection.db.cursor.iter()) {
       const key = toHex(row.connectionId);
       if (!key || key === selfConnectionId || row.page !== PAGE_KEY) {
+        if (key) {
+          lastRemotePoints.delete(key);
+        }
         continue;
       }
 
       nextKeys.add(key);
       const cursorEl = ensureCursorEl(key, row.color, shortIdentity(row.identity));
       positionCursor(cursorEl, row.x, row.y);
+
+      const previousPoint = lastRemotePoints.get(key);
+      if (previousPoint && previousPoint.page === row.page) {
+        drawRemoteSegment(
+          previousPoint.x,
+          previousPoint.y,
+          row.x,
+          row.y,
+          row.color,
+          row.isRightMouse
+        );
+      }
+
+      lastRemotePoints.set(key, { x: row.x, y: row.y, page: row.page });
     }
 
     for (const [key, el] of cursorEls) {
@@ -106,6 +178,7 @@ function initCursorSync(container: HTMLElement) {
 
       el.remove();
       cursorEls.delete(key);
+      lastRemotePoints.delete(key);
     }
   };
 
@@ -121,12 +194,13 @@ function initCursorSync(container: HTMLElement) {
     connection.reducers.updateCursor(payload);
   };
 
-  const queueCursorUpdate = (x: number, y: number) => {
+  const queueCursorUpdate = (x: number, y: number, isRightMouse: boolean) => {
     pendingPayload = {
       page: PAGE_KEY,
       x,
       y,
       color: localColor,
+      isRightMouse,
     };
 
     if (pendingTimer !== 0) {
@@ -145,22 +219,39 @@ function initCursorSync(container: HTMLElement) {
 
     const x = clamp((event.clientX - rect.left) / rect.width, 0, 1);
     const y = clamp((event.clientY - rect.top) / rect.height, 0, 1);
-    queueCursorUpdate(x, y);
+    queueCursorUpdate(x, y, Boolean(event.buttons & 2));
+  };
+
+  const sendTouchPosition = (event: TouchEvent) => {
+    const touch = event.touches[0] || event.changedTouches[0];
+    if (!touch) {
+      return;
+    }
+
+    const rect = container.getBoundingClientRect();
+    if (rect.width <= 0 || rect.height <= 0) {
+      return;
+    }
+
+    const x = clamp((touch.clientX - rect.left) / rect.width, 0, 1);
+    const y = clamp((touch.clientY - rect.top) / rect.height, 0, 1);
+    queueCursorUpdate(x, y, false);
   };
 
   container.addEventListener('pointermove', sendPointerPosition, { passive: true });
   container.addEventListener('pointerdown', sendPointerPosition, { passive: true });
+  container.addEventListener('touchstart', sendTouchPosition, { passive: true });
+  container.addEventListener('touchmove', sendTouchPosition, { passive: true });
+  window.addEventListener('resize', resizeDrawingCanvas);
   window.addEventListener('resize', syncAll);
 
   connection = DbConnection.builder()
     .withUri(HOST)
     .withDatabaseName(DB_NAME)
-    .withToken(localStorage.getItem(TOKEN_KEY) || undefined)
-    .onConnect((conn: DbConnection, _identity: Identity, token: string) => {
+    .onConnect((conn: DbConnection, _identity: Identity) => {
       connection = conn;
       isConnected = true;
       selfConnectionId = toHex(conn.connectionId);
-      localStorage.setItem(TOKEN_KEY, token);
 
       conn.subscriptionBuilder().onApplied(syncAll).subscribe(tables.cursor);
       conn.db.cursor.onInsert(syncAll);
