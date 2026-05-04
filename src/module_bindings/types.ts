@@ -17,6 +17,7 @@ export const Cursor = __t.object("Cursor", {
   x: __t.f32(),
   y: __t.f32(),
   color: __t.string(),
+  isRightMouse: __t.bool(),
 });
 export type Cursor = __Infer<typeof Cursor>;
 

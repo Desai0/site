@@ -31,13 +31,10 @@ button,
 /* Сам лист бумаги */
 .notebook-page {
     position: relative;
-    /* Занимает всю ширину (за вычетом паддингов body), но не растягивается больше 16:9 */
     width: 100%;
-    max-width: calc(100vh * 16 / 9);
+    max-width: 1920px;
     margin: 0 auto;
-    /* Центрируем, если экран очень широкий */
     min-height: 100vh;
-    /* Идёт от самого верха до самого низа экрана */
     background-color: #eaddcb;
     box-shadow:
         15px 0 40px rgba(0, 0, 0, 0.6),
@@ -641,7 +638,8 @@ button,
 .letter-deco-layer {
     position: relative;
     width: 100%;
-    height: 0; /* не занимает места, все декорации абсолютные */
+    height: 0;
+    /* не занимает места, все декорации абсолютные */
     pointer-events: none;
 }
 
@@ -1098,7 +1096,7 @@ button,
 
 .letter-shadow-note2 {
     position: absolute;
-    left: 1720px;
+    left: 1420px;
     top: 40px;
     font-family: "Caveat", cursive;
     font-size: 5rem;
@@ -1402,6 +1400,13 @@ button,
     transform: translateY(12px) rotate(-1deg);
 }
 
+.remote-trail-canvas {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 190;
+}
+
 .spacetime-cursors-layer {
     position: absolute;
     inset: 0;
@@ -1417,6 +1422,7 @@ button,
     gap: 10px;
     transform: translate(-50%, -50%);
     will-change: left, top;
+    transition: left 0.08s linear, top 0.08s linear, opacity 0.2s ease;
 }
 
 .remote-cursor-dot {
@@ -1425,6 +1431,7 @@ button,
     border-radius: 50%;
     border: 2px solid rgba(255, 255, 255, 0.9);
     flex: 0 0 auto;
+    transform-origin: center;
 }
 
 .remote-cursor-label {
@@ -1442,4 +1449,510 @@ button,
     line-height: 1;
     backdrop-filter: blur(4px);
     white-space: nowrap;
+}
+
+.remote-cursor-active .remote-cursor-dot {
+    animation: remote-cursor-pulse 0.45s ease-out;
+}
+
+@keyframes remote-cursor-pulse {
+    0% {
+        transform: scale(0.82);
+        opacity: 0.75;
+    }
+    65% {
+        transform: scale(1.24);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.track-page-shell {
+    min-height: 100vh;
+}
+
+.track-page-content {
+    padding-bottom: 18vh;
+}
+
+.track-intro {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(0, 1.4fr) minmax(320px, 0.8fr);
+    gap: 48px;
+    align-items: start;
+    margin: 150px 110px 70px 135px;
+    z-index: 1;
+}
+
+.track-kicker {
+    margin: 0 0 18px;
+    font-size: 1.1rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.track-intro h1 {
+    margin: 0 0 18px;
+    font-size: clamp(2.8rem, 5vw, 4.8rem);
+    line-height: 0.95;
+    font-weight: 700;
+    transform: rotate(-1deg);
+}
+
+.track-intro-text {
+    max-width: 720px;
+    margin: 0;
+    font-size: 1.22rem;
+    line-height: 1.65;
+    color: rgba(25, 25, 25, 0.78);
+}
+
+.track-intro-note,
+.track-paper-card,
+.track-step-card {
+    position: relative;
+    background: rgba(255, 250, 236, 0.96);
+    border: 2px solid rgba(35, 35, 35, 0.68);
+    box-shadow: 0 18px 34px rgba(0, 0, 0, 0.1);
+    filter: url(#rough-edge);
+}
+
+.track-intro-note {
+    padding: 28px 28px 30px;
+    transform: rotate(2deg);
+}
+
+.track-intro-note p {
+    margin: 10px 0 0;
+    font-size: 1rem;
+    line-height: 1.7;
+    color: rgba(30, 30, 30, 0.75);
+}
+
+.track-flow-board {
+    margin: 0 110px 72px 135px;
+}
+
+.track-flow-title {
+    margin-bottom: 24px;
+    font-size: 1.2rem;
+}
+
+.track-flow-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 26px;
+}
+
+.track-step-card {
+    padding: 28px 26px;
+}
+
+.track-step-card:nth-child(1) {
+    transform: rotate(-1.4deg);
+}
+
+.track-step-card:nth-child(2) {
+    transform: rotate(1deg);
+}
+
+.track-step-card:nth-child(3) {
+    transform: rotate(-0.8deg);
+}
+
+.track-step-card h2,
+.track-paper-card h2 {
+    margin: 8px 0 14px;
+    font-size: 1.7rem;
+}
+
+.track-step-card p {
+    margin: 0;
+    color: rgba(30, 30, 30, 0.75);
+    line-height: 1.65;
+}
+
+.track-tools-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 34px;
+    margin: 0 110px 40px 135px;
+    align-items: start;
+}
+
+.track-paper-card {
+    padding: 34px 32px 30px;
+}
+
+.track-submit-form {
+    transform: rotate(-1.4deg);
+}
+
+.track-lookup-form {
+    transform: rotate(1.2deg);
+}
+
+.track-card-label,
+.track-form-hint {
+    font-size: 0.95rem;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    color: rgba(30, 30, 30, 0.55);
+}
+
+.track-form-hint {
+    margin: 0 0 18px;
+}
+
+.track-field {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.track-field span {
+    font-size: 0.95rem;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: rgba(30, 30, 30, 0.65);
+}
+
+.track-field input {
+    width: 100%;
+    padding: 14px 16px;
+    border: none;
+    border-bottom: 2px solid rgba(30, 30, 30, 0.4);
+    background: rgba(255, 255, 255, 0.42);
+    font: inherit;
+    color: #1d1d1d;
+    outline: none;
+}
+
+.track-field input:focus {
+    border-bottom-color: rgba(211, 47, 47, 0.6);
+    background: rgba(255, 255, 255, 0.62);
+}
+
+.track-action-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 210px;
+    padding: 14px 20px;
+    border: 2px solid rgba(30, 30, 30, 0.65);
+    background: #f6ead0;
+    color: #1d1d1d;
+    font: inherit;
+    font-weight: 700;
+    text-transform: uppercase;
+    cursor: pointer;
+    transform: rotate(-1deg);
+    transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.track-action-button:hover {
+    transform: rotate(1deg) translateY(-2px);
+    background: #f2dfb5;
+}
+
+.track-response-box {
+    min-height: 94px;
+    padding: 16px 18px;
+    border: 2px dashed rgba(30, 30, 30, 0.35);
+    background: rgba(255, 255, 255, 0.48);
+    line-height: 1.6;
+    color: rgba(25, 25, 25, 0.78);
+}
+
+.track-response-box[data-state="pending"] {
+    border-color: rgba(0, 100, 255, 0.35);
+}
+
+.track-response-box[data-state="success"] {
+    border-color: rgba(32, 128, 72, 0.45);
+    color: rgba(20, 80, 44, 0.95);
+}
+
+.track-response-box[data-state="error"] {
+    border-color: rgba(211, 47, 47, 0.45);
+    color: rgba(120, 20, 20, 0.95);
+}
+
+.track-result-card {
+    margin-top: 18px;
+    padding: 20px 22px;
+    border: 2px solid rgba(35, 35, 35, 0.55);
+    background: rgba(255, 253, 244, 0.95);
+}
+
+.track-result-card dl {
+    display: grid;
+    gap: 12px;
+    margin: 14px 0 0;
+}
+
+.track-result-card dl div {
+    display: grid;
+    grid-template-columns: 108px minmax(0, 1fr);
+    gap: 14px;
+    align-items: start;
+}
+
+.track-result-card dt {
+    font-weight: 700;
+    text-transform: uppercase;
+    color: rgba(30, 30, 30, 0.55);
+}
+
+.track-result-card dd {
+    margin: 0;
+    line-height: 1.5;
+    word-break: break-word;
+}
+
+.track-result-card a {
+    color: #0b78ff;
+}
+
+.track-page-footer-note {
+    margin: 28px 110px 0 135px;
+    font-size: 1.05rem;
+}
+
+/* =========================================================================
+   MOBILE & TABLET RESPONSIVENESS
+========================================================================= */
+
+@media (max-width: 1200px) {
+    .notebook-page {
+        max-width: 100%;
+        margin: 0;
+    }
+
+    .header-flat {
+        padding: 20px 20px 10px 60px;
+    }
+
+    .logo-sketch {
+        font-size: 3.5rem;
+    }
+
+    .nav-sketch {
+        gap: 20px;
+        font-size: 1.8rem;
+    }
+
+    .hero-content {
+        flex-direction: column;
+        align-items: center;
+        padding: 0 40px;
+    }
+
+    .hero-text {
+        width: 100%;
+        text-align: center;
+    }
+
+    .hero-quote {
+        margin-left: 0;
+        margin-top: 40px;
+    }
+
+    .works-fragments {
+        padding: 40px 60px 80px 60px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 40px;
+    }
+
+    .works-title {
+        position: relative;
+        left: 0;
+        top: 0;
+        text-align: center;
+        margin-bottom: 40px;
+        transform: rotate(-1deg);
+    }
+
+    .works-title small {
+        margin-left: 0;
+    }
+
+    .works-connector-map {
+        display: none !important;
+        /* Скрываем стрелочки между блоками на мобильных */
+    }
+
+    /* Отключаем абсолютное позиционирование для фрагментов и ставим их в столбик */
+    .fragment-main,
+    .fragment-small,
+    .fragment-note-card,
+    .works-scratch,
+    .works-red-note {
+        position: relative !important;
+        left: 0 !important;
+        right: 0 !important;
+        top: 0 !important;
+        bottom: 0 !important;
+        transform: none !important;
+        margin: 0 auto !important;
+        width: 100% !important;
+        max-width: 600px;
+    }
+
+    .works-scratch,
+    .works-red-note {
+        transform: rotate(-2deg) !important;
+    }
+
+    /* Скрываем очень специфичные абсолютные декорации, чтобы они не летали по экрану */
+    .ldeco,
+    .hero-center-doodles,
+    .blue-pencil-arrow {
+        display: none !important;
+    }
+
+    .letter-form {
+        width: 90%;
+        padding: 40px;
+        margin-top: 60px;
+    }
+
+    .track-intro,
+    .track-flow-board,
+    .track-tools-grid,
+    .track-page-footer-note {
+        margin-left: 110px;
+        margin-right: 90px;
+    }
+
+    .track-intro {
+        grid-template-columns: 1fr;
+    }
+
+    .track-flow-grid,
+    .track-tools-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .letter-row {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .letter-label {
+        width: auto;
+        margin-bottom: 5px;
+    }
+}
+
+@media (max-width: 768px) {
+    body {
+        padding: 0;
+    }
+
+    .spirals {
+        left: -30px;
+        /* Прячем пружину наполовину за экран */
+    }
+
+    .header-flat {
+        flex-direction: column;
+        align-items: flex-start;
+        padding: 20px 20px 20px 40px;
+    }
+
+    .greeting-hi {
+        font-size: 3rem;
+    }
+
+    .greeting-name {
+        font-size: 4rem;
+    }
+
+    .greeting-role {
+        font-size: 2.5rem;
+    }
+
+    .avatar-block {
+        width: 100%;
+        max-width: 300px;
+        height: 350px;
+    }
+
+    .hero-content {
+        padding: 0 20px 0 40px;
+    }
+
+    .works-fragments {
+        padding: 20px 30px;
+    }
+
+    .letter-form {
+        width: 95%;
+        padding: 30px 20px;
+        min-height: auto;
+    }
+
+    .track-intro,
+    .track-flow-board,
+    .track-tools-grid,
+    .track-page-footer-note {
+        margin-left: 78px;
+        margin-right: 34px;
+    }
+
+    .track-paper-card,
+    .track-step-card,
+    .track-intro-note,
+    .track-submit-form,
+    .track-lookup-form {
+        transform: none !important;
+    }
+
+    .track-intro h1 {
+        font-size: clamp(2.2rem, 12vw, 3.2rem);
+    }
+
+    .track-paper-card {
+        padding: 26px 20px 24px;
+    }
+
+    .track-result-card dl div {
+        grid-template-columns: 1fr;
+        gap: 4px;
+    }
+
+    .track-action-button {
+        width: 100%;
+    }
+
+    .submit-stamp {
+        position: relative;
+        right: 0;
+        bottom: 0;
+        margin: 20px auto 0;
+    }
+
+    .remote-cursor {
+        gap: 8px;
+    }
+
+    .remote-cursor-dot {
+        width: 18px;
+        height: 18px;
+        border-width: 3px;
+    }
+
+    .remote-cursor-label {
+        min-height: 26px;
+        padding: 4px 8px;
+        font-size: 0.68rem;
+    }
 }
