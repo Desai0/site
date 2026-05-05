@@ -1,5 +1,3 @@
-@import url('https://fonts.googleapis.com/css2?family=Caveat:wght@400;700&family=JetBrains+Mono:ital,wght@0,400;0,700;1,400&display=swap');
-
 * {
     box-sizing: border-box;
     margin: 0;
@@ -101,7 +99,7 @@ button,
 .rolled-header {
     position: sticky;
     top: 0;
-    z-index: 120;
+    z-index: 320;
     /* Поверх спиралей (110) */
     width: 100%;
 }
@@ -1400,6 +1398,13 @@ button,
     transform: translateY(12px) rotate(-1deg);
 }
 
+.persistent-trail-canvas {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 185;
+}
+
 .remote-trail-canvas {
     position: absolute;
     inset: 0;
@@ -1417,24 +1422,28 @@ button,
 
 .remote-cursor {
     position: absolute;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    transform: translate(-50%, -50%);
+    width: 0;
+    height: 0;
     will-change: left, top;
     transition: left 0.08s linear, top 0.08s linear, opacity 0.2s ease;
 }
 
 .remote-cursor-dot {
+    position: absolute;
+    left: 0;
+    top: 0;
     width: 14px;
     height: 14px;
     border-radius: 50%;
     border: 2px solid rgba(255, 255, 255, 0.9);
-    flex: 0 0 auto;
+    transform: translate(-50%, -50%);
     transform-origin: center;
 }
 
 .remote-cursor-label {
+    position: absolute;
+    left: 12px;
+    top: 0;
     display: inline-flex;
     align-items: center;
     min-height: 28px;
@@ -1447,12 +1456,13 @@ button,
     font-family: "JetBrains Mono", monospace;
     font-size: 0.75rem;
     line-height: 1;
+    transform: translateY(-50%);
     backdrop-filter: blur(4px);
     white-space: nowrap;
 }
 
 .remote-cursor-active .remote-cursor-dot {
-    animation: remote-cursor-pulse 0.45s ease-out;
+    animation: none;
 }
 
 @keyframes remote-cursor-pulse {
@@ -1940,10 +1950,6 @@ button,
         margin: 20px auto 0;
     }
 
-    .remote-cursor {
-        gap: 8px;
-    }
-
     .remote-cursor-dot {
         width: 18px;
         height: 18px;
@@ -1951,6 +1957,7 @@ button,
     }
 
     .remote-cursor-label {
+        left: 16px;
         min-height: 26px;
         padding: 4px 8px;
         font-size: 0.68rem;

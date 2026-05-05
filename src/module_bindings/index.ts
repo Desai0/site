@@ -34,12 +34,15 @@ import {
 } from "spacetimedb";
 
 // Import all reducer arg schemas
+import AddStrokeBatchReducer from "./add_stroke_batch_reducer";
 import UpdateCursorReducer from "./update_cursor_reducer";
 
 // Import all procedure arg schemas
+import * as GetStrokeHistoryProcedure from "./get_stroke_history_procedure";
 
 // Import all table schema definitions
 import CursorRow from "./cursor_table";
+import StrokeBatchRow from "./stroke_batch_table";
 
 /** Type-only namespace exports for generated type groups. */
 
@@ -56,15 +59,28 @@ const tablesSchema = __schema({
       { name: 'cursor_connection_id_key', constraint: 'unique', columns: ['connectionId'] },
     ],
   }, CursorRow),
+  strokeBatch: __table({
+    name: 'stroke_batch',
+    indexes: [
+      { name: 'id', algorithm: 'btree', columns: [
+        'id',
+      ] },
+    ],
+    constraints: [
+      { name: 'stroke_batch_id_key', constraint: 'unique', columns: ['id'] },
+    ],
+  }, StrokeBatchRow),
 });
 
 /** The schema information for all reducers in this module. This is defined the same way as the reducers would have been defined in the server, except the body of the reducer is omitted in code generation. */
 const reducersSchema = __reducers(
+  __reducerSchema("add_stroke_batch", AddStrokeBatchReducer),
   __reducerSchema("update_cursor", UpdateCursorReducer),
 );
 
 /** The schema information for all procedures in this module. This is defined the same way as the procedures would have been defined in the server. */
 const proceduresSchema = __procedures(
+  __procedureSchema("get_stroke_history", GetStrokeHistoryProcedure.params, GetStrokeHistoryProcedure.returnType),
 );
 
 /** The remote SpacetimeDB module schema, both runtime and type information. */

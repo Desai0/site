@@ -30,6 +30,9 @@ document.addEventListener("DOMContentLoaded", () => {
 function initCursorTrail() {
   const container = document.querySelector('.notebook-page');
   if (!container) return;
+  const dbName = 'site-cursors';
+  const colorKey = `stdb:${dbName}:cursor-color`;
+  const localColor = localStorage.getItem(colorKey) || '#0b78ff';
 
   const canvas = document.createElement('canvas');
   canvas.id = 'cursorTrail';
@@ -90,14 +93,24 @@ function initCursorTrail() {
 
     // Проверяем зажатие ПКМ (buttons — это битовая маска, 2 — правая кнопка)
     const isRightMB = e.buttons !== undefined && (e.buttons & 2);
+    const fromX = lastX;
+    const fromY = lastY;
 
     ctx.lineWidth = isRightMB ? 2 : 0.8;
-    ctx.strokeStyle = isRightMB ? 'rgba(30, 30, 30, 0.4)' : 'rgba(50, 50, 50, 0.2)';
+    ctx.strokeStyle = isRightMB ? hexToAlpha(localColor, 0.4) : hexToAlpha(localColor, 0.2);
 
     ctx.beginPath();
-    ctx.moveTo(lastX, lastY);
+    ctx.moveTo(fromX, fromY);
     ctx.lineTo(x, y);
     ctx.stroke();
+
+    window.__recordCursorTrailSegment?.({
+      fromX,
+      fromY,
+      toX: x,
+      toY: y,
+      isRightMouse: Boolean(isRightMB)
+    });
 
     lastX = x;
     lastY = y;
@@ -128,6 +141,18 @@ function initCursorTrail() {
   window.addEventListener('touchmove', (e) => {
     draw(e);
   }, { passive: true });
+}
+
+function hexToAlpha(hex, alpha) {
+  const normalized = String(hex || '').replace('#', '');
+  if (normalized.length !== 6) {
+    return `rgba(30, 30, 30, ${alpha})`;
+  }
+
+  const red = parseInt(normalized.slice(0, 2), 16);
+  const green = parseInt(normalized.slice(2, 4), 16);
+  const blue = parseInt(normalized.slice(4, 6), 16);
+  return `rgba(${red}, ${green}, ${blue}, ${alpha})`;
 }
 
 function generateScribble(container) {

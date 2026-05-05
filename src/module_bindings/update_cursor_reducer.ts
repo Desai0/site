@@ -15,5 +15,6 @@ export default {
   x: __t.f32(),
   y: __t.f32(),
   color: __t.option(__t.string()),
+  name: __t.option(__t.string()),
   isRightMouse: __t.bool(),
 };

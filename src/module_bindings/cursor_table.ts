@@ -13,6 +13,7 @@ import {
 export default __t.row({
   connectionId: __t.connectionId().primaryKey().name("connection_id"),
   identity: __t.identity(),
+  name: __t.string(),
   page: __t.string(),
   x: __t.f32(),
   y: __t.f32(),
