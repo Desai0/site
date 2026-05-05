@@ -19,7 +19,7 @@ const cursor = table(
 
 const strokeBatch = table(
   {
-    name: 'stroke_batch',
+    name: 'strokebatch',
     public: true,
   },
   {

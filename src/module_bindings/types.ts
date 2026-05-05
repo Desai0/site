@@ -22,7 +22,7 @@ export const Cursor = __t.object("Cursor", {
 });
 export type Cursor = __Infer<typeof Cursor>;
 
-export const StrokeBatch = __t.object("StrokeBatch", {
+export const Strokebatch = __t.object("Strokebatch", {
   id: __t.u64(),
   connectionId: __t.connectionId(),
   page: __t.string(),
@@ -31,5 +31,5 @@ export const StrokeBatch = __t.object("StrokeBatch", {
   pointsJson: __t.string(),
   createdAtMs: __t.u64(),
 });
-export type StrokeBatch = __Infer<typeof StrokeBatch>;
+export type Strokebatch = __Infer<typeof Strokebatch>;
 

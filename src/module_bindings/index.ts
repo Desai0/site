@@ -60,14 +60,14 @@ const tablesSchema = __schema({
     ],
   }, CursorRow),
   strokeBatch: __table({
-    name: 'stroke_batch',
+    name: 'strokebatch',
     indexes: [
       { name: 'id', algorithm: 'btree', columns: [
         'id',
       ] },
     ],
     constraints: [
-      { name: 'stroke_batch_id_key', constraint: 'unique', columns: ['id'] },
+      { name: 'strokebatch_id_key', constraint: 'unique', columns: ['id'] },
     ],
   }, StrokeBatchRow),
 });

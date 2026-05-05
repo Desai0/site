@@ -531,7 +531,7 @@ function initCursorSync(container: HTMLElement) {
         })
         .subscribe([
           'SELECT * FROM cursor',
-          'SELECT * FROM stroke_batch'
+          'SELECT * FROM strokebatch'
         ]);
       conn.db.cursor.onInsert(syncAll);
       conn.db.cursor.onUpdate(syncAll);
