@@ -175,37 +175,24 @@ function initCursorSync(container: HTMLElement) {
     }
   };
 
-  const syncHistory = () => {
+  const renderHistoryRows = (
+    rows: Array<{
+      connectionId: string;
+      color: string;
+      isRightMouse: boolean;
+      pointsJson: string;
+    }>
+  ) => {
     if (!historyCtx) {
       return;
     }
 
     historyCtx.clearRect(0, 0, historyCanvas.width, historyCanvas.height);
-    if (!connection) {
-      return;
-    }
+    const visibleRows = rows.filter(row => row.connectionId !== selfConnectionId);
 
-    const rows = Array.from(connection.db.strokeBatch.iter())
-      .filter(row => row.page === PAGE_KEY && toHex(row.connectionId) !== selfConnectionId)
-      .sort((left, right) => {
-        if (left.createdAtMs < right.createdAtMs) {
-          return -1;
-        }
-        if (left.createdAtMs > right.createdAtMs) {
-          return 1;
-        }
-        if (left.id < right.id) {
-          return -1;
-        }
-        if (left.id > right.id) {
-          return 1;
-        }
-        return 0;
-      });
+    console.info('Stroke history rows:', visibleRows.length);
 
-    console.info('Stroke history rows:', rows.length);
-
-    for (const row of rows) {
+    for (const row of visibleRows) {
       try {
         const points = JSON.parse(row.pointsJson) as Array<{ x?: unknown; y?: unknown }>;
         const normalizedPoints = points
@@ -221,6 +208,30 @@ function initCursorSync(container: HTMLElement) {
       } catch (error) {
         console.warn('Failed to parse stroke batch payload.', error);
       }
+    }
+  };
+
+  const loadStrokeHistory = async (conn: DbConnection) => {
+    try {
+      const rawHistory = await conn.procedures.getStrokeHistory({ page: PAGE_KEY });
+      const rows = JSON.parse(rawHistory) as Array<{
+        connectionId?: unknown;
+        color?: unknown;
+        isRightMouse?: unknown;
+        pointsJson?: unknown;
+      }>;
+      const normalizedRows = rows
+        .map(row => ({
+          connectionId: typeof row.connectionId === 'string' ? row.connectionId : '',
+          color: typeof row.color === 'string' ? row.color : '#1e1e1e',
+          isRightMouse: Boolean(row.isRightMouse),
+          pointsJson: typeof row.pointsJson === 'string' ? row.pointsJson : '[]',
+        }))
+        .filter(row => row.connectionId && row.pointsJson);
+
+      renderHistoryRows(normalizedRows);
+    } catch (error) {
+      console.warn('Failed to load stroke history.', error);
     }
   };
 
@@ -502,7 +513,11 @@ function initCursorSync(container: HTMLElement) {
   window.addEventListener('beforeunload', flushStrokeBatch);
   window.addEventListener('resize', resizeDrawingCanvas);
   window.addEventListener('resize', syncAll);
-  window.addEventListener('resize', syncHistory);
+  window.addEventListener('resize', () => {
+    if (connection) {
+      void loadStrokeHistory(connection);
+    }
+  });
 
   const connect = (authToken?: string | null) => {
     connection?.disconnect();
@@ -524,23 +539,13 @@ function initCursorSync(container: HTMLElement) {
         storeAuthToken(token);
       }
 
-      conn.subscriptionBuilder()
-        .onApplied(() => {
-          syncAll();
-          syncHistory();
-        })
-        .subscribe([
-          'SELECT * FROM cursor',
-          'SELECT * FROM strokebatch'
-        ]);
+      conn.subscriptionBuilder().onApplied(syncAll).subscribe(tables.cursor);
       conn.db.cursor.onInsert(syncAll);
       conn.db.cursor.onUpdate(syncAll);
       conn.db.cursor.onDelete(syncAll);
-      conn.db.strokeBatch.onInsert(syncHistory);
-      conn.db.strokeBatch.onDelete(syncHistory);
       window.setTimeout(() => {
         syncAll();
-        syncHistory();
+        void loadStrokeHistory(conn);
       }, 0);
       queueCursorUpdate(0, 0, false);
       void refreshNameFromIp();

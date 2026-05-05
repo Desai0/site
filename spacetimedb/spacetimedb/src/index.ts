@@ -115,6 +115,15 @@ export const add_stroke_batch = spacetimedb.reducer(
     }
 
     const createdAtMs = BigInt(Date.now());
+    const cutoff = BigInt(Date.now() - STROKE_HISTORY_TTL_MS);
+    const expiredIds = Array.from(ctx.db.strokeBatch.iter())
+      .filter(row => row.createdAtMs < cutoff)
+      .map(row => row.id);
+
+    for (const expiredId of expiredIds) {
+      ctx.db.strokeBatch.id.delete(expiredId);
+    }
+
     ctx.db.strokeBatch.insert({
       id,
       connectionId: ctx.connectionId,
@@ -134,32 +143,34 @@ export const get_stroke_history = spacetimedb.procedure(
   t.string(),
   (ctx, { page }) => {
     const cutoff = BigInt(Date.now() - STROKE_HISTORY_TTL_MS);
-    const rows = Array.from(ctx.db.strokeBatch.iter())
-      .filter(row => row.page === page && row.createdAtMs >= cutoff)
-      .sort((left, right) => {
-        if (left.createdAtMs < right.createdAtMs) {
-          return -1;
-        }
-        if (left.createdAtMs > right.createdAtMs) {
-          return 1;
-        }
-        if (left.id < right.id) {
-          return -1;
-        }
-        if (left.id > right.id) {
-          return 1;
-        }
-        return 0;
-      })
-      .map(row => ({
-        connectionId: row.connectionId.toHexString(),
-        page: row.page,
-        color: row.color,
-        isRightMouse: row.isRightMouse,
-        pointsJson: row.pointsJson,
-        createdAtMs: row.createdAtMs.toString(),
-        id: row.id.toString(),
-      }));
+    const rows = ctx.withTx(tx =>
+      Array.from(tx.db.strokeBatch.iter())
+        .filter(row => row.page === page && row.createdAtMs >= cutoff)
+        .sort((left, right) => {
+          if (left.createdAtMs < right.createdAtMs) {
+            return -1;
+          }
+          if (left.createdAtMs > right.createdAtMs) {
+            return 1;
+          }
+          if (left.id < right.id) {
+            return -1;
+          }
+          if (left.id > right.id) {
+            return 1;
+          }
+          return 0;
+        })
+        .map(row => ({
+          connectionId: row.connectionId.toHexString(),
+          page: row.page,
+          color: row.color,
+          isRightMouse: row.isRightMouse,
+          pointsJson: row.pointsJson,
+          createdAtMs: row.createdAtMs.toString(),
+          id: row.id.toString(),
+        }))
+    );
 
     return JSON.stringify(rows);
   }
