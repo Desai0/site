@@ -1,0 +1,13 @@
+{
+  "name": "track-backend",
+  "private": true,
+  "version": "0.1.0",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js",
+    "check": "node --check index.js && node --check playwright_worker.js"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

@@ -6,5 +6,8 @@
 import { type Infer as __Infer } from "spacetimedb";
 
 // Import all procedure arg schemas
+import * as GetStrokeHistoryProcedure from "../get_stroke_history_procedure";
 
+export type GetStrokeHistoryArgs = __Infer<typeof GetStrokeHistoryProcedure.params>;
+export type GetStrokeHistoryResult = __Infer<typeof GetStrokeHistoryProcedure.returnType>;
 

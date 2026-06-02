@@ -13,6 +13,7 @@ import {
 export const Cursor = __t.object("Cursor", {
   connectionId: __t.connectionId(),
   identity: __t.identity(),
+  name: __t.string(),
   page: __t.string(),
   x: __t.f32(),
   y: __t.f32(),
@@ -20,4 +21,15 @@ export const Cursor = __t.object("Cursor", {
   isRightMouse: __t.bool(),
 });
 export type Cursor = __Infer<typeof Cursor>;
+
+export const Strokebatch = __t.object("Strokebatch", {
+  id: __t.u64(),
+  connectionId: __t.connectionId(),
+  page: __t.string(),
+  color: __t.string(),
+  isRightMouse: __t.bool(),
+  pointsJson: __t.string(),
+  createdAtMs: __t.u64(),
+});
+export type Strokebatch = __Infer<typeof Strokebatch>;
 

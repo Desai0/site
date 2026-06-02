@@ -6,7 +6,9 @@
 import { type Infer as __Infer } from "spacetimedb";
 
 // Import all reducer arg schemas
+import AddStrokeBatchReducer from "../add_stroke_batch_reducer";
 import UpdateCursorReducer from "../update_cursor_reducer";
 
+export type AddStrokeBatchParams = __Infer<typeof AddStrokeBatchReducer>;
 export type UpdateCursorParams = __Infer<typeof UpdateCursorReducer>;
 
