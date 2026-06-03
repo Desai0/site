@@ -1,0 +1,16 @@
+.git
+.gitignore
+node_modules
+dist
+build
+.spacetimedb-data
+backend_scraper/data
+.env
+*.log
+logs
+screenshots
+docs
+.idea
+.vscode
+.DS_Store
+Thumbs.db
