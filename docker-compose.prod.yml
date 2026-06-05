@@ -1,0 +1,32 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: site-frontend-prod
+    env_file:
+      - .env.production
+    ports:
+      - "5173:5173"
+    restart: unless-stopped
+    depends_on:
+      - track-backend
+
+  track-backend:
+    image: node:22-alpine
+    container_name: track-backend-prod
+    working_dir: /app
+    command: node index.js
+    environment:
+      HOST: 0.0.0.0
+      PORT: 18080
+      TRACK_STORE_PATH: /app/data/tracks.json
+    ports:
+      - "18080:18080"
+    volumes:
+      - ./backend_scraper:/app
+      - track_backend_data:/app/data
+    restart: unless-stopped
+
+volumes:
+  track_backend_data:
