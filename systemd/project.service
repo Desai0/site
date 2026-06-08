@@ -1,0 +1,12 @@
+[Unit]
+Description=Site demo production service
+After=docker.service
+
+[Service]
+WorkingDirectory=/opt/remnawave/www
+ExecStart=/usr/bin/docker compose -f docker-compose.prod.yml up
+ExecStop=/usr/bin/docker compose -f docker-compose.prod.yml down
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
