@@ -6,10 +6,19 @@ backend_scraper/data/
 
 # Env files
 .env
+.env.production
 .env.local
 .env.development.local
 .env.test.local
 .env.production.local
+
+# Backups and database dumps
+backups/
+*.sql
+*.dump
+*.db
+*.sqlite
+*.sqlite3
 
 # Logs
 *.log
