@@ -7,6 +7,6 @@
 - [x] Интеграционный CORS-тест проходит локально.
 - [x] Полная production-сборка проходит.
 - [x] GitHub Actions CI завершён успешно.
-- [x] Pull Request #10 создан и связан с issue #9.
+- [x] Pull Request #11 создан и связан с issue #9.
 - [x] Release-архив `release/site-0.3.1.zip` создан.
 - [ ] Тег `v0.3.1` создан после принятия PR.

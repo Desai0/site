@@ -128,9 +128,9 @@ def create_support_report():
         [
             ["Проект", "Desaichk Portfolio и backend заявок на музыкальные треки"],
             ["Репозиторий", "https://github.com/Desai0/site"],
-            ["Рабочая ветка", "codex/support-fix-cors-policy"],
+            ["Рабочая ветка", "support-fix-cors-policy"],
             ["GitHub Issue", "https://github.com/Desai0/site/issues/9"],
-            ["Pull Request", "https://github.com/Desai0/site/pull/10"],
+            ["Pull Request", "https://github.com/Desai0/site/pull/11"],
             ["Версия релиза", "0.3.1"],
             ["Дата проверки", "10 июня 2026 года"],
         ],
@@ -194,7 +194,7 @@ def create_support_report():
         document,
         "Workflow .github/workflows/ci.yml запускается на push и pull_request. "
         "Он использует Node.js 22, выполняет npm ci и npm run check. GitHub "
-        "Actions для Pull Request #10 завершён со статусом success."
+        "Actions для Pull Request #11 завершён со статусом success."
     )
 
     add_heading(document, "7. Релиз")
@@ -209,7 +209,7 @@ def create_support_report():
     add_paragraph(
         document,
         "Причина инцидента найдена и устранена. Создан Issue #9, исправление "
-        "выполнено в отдельной ветке и отправлено в Pull Request #10. Локальные "
+        "выполнено в отдельной ветке и отправлено в Pull Request #11. Локальные "
         "проверки и GitHub Actions прошли успешно. Тег v0.3.1 создаётся после "
         "принятия Pull Request; для сдачи уже подготовлен release-архив."
     )
@@ -284,7 +284,7 @@ npm run release:check
 ## 8. Итог
 
 Локальная проверка подтверждает исправление. Созданы GitHub Issue #9 и Pull
-Request #10. GitHub Actions CI завершён успешно. Тег создаётся после
+Request #11. GitHub Actions CI завершён успешно. Тег создаётся после
 принятия Pull Request; локальный release-архив уже подготовлен.
 """,
     )

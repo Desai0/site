@@ -28,7 +28,7 @@ try {
     Save-CommandResult "02_issue_and_branch.txt" "git log -1 --oneline; GitHub Issue #9" {
         git log -1 --oneline
         "Issue: https://github.com/Desai0/site/issues/9"
-        "Branch: codex/support-fix-cors-policy"
+        "Branch: support-fix-cors-policy"
     }
 
     Save-CommandResult "03_bug_reproduced.txt" "git show bumaga:backend_scraper/index.js | Select-String 'access-control-allow-origin'" {
@@ -59,9 +59,9 @@ try {
         Get-Content RELEASE_NOTES.md
     }
 
-    Save-CommandResult "08_pull_request_and_ci.txt" "GitHub PR #10; Actions run #27283032917" {
-        "Pull Request: https://github.com/Desai0/site/pull/10"
-        "Actions run: https://github.com/Desai0/site/actions/runs/27283032917"
+    Save-CommandResult "08_pull_request_and_ci.txt" "GitHub PR #11; GitHub Actions CI" {
+        "Pull Request: https://github.com/Desai0/site/pull/11"
+        "Actions: https://github.com/Desai0/site/actions"
         "Status: completed"
         "Conclusion: success"
     }
