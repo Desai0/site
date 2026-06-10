@@ -129,6 +129,8 @@ def create_support_report():
             ["Проект", "Desaichk Portfolio и backend заявок на музыкальные треки"],
             ["Репозиторий", "https://github.com/Desai0/site"],
             ["Рабочая ветка", "codex/support-fix-cors-policy"],
+            ["GitHub Issue", "https://github.com/Desai0/site/issues/9"],
+            ["Pull Request", "https://github.com/Desai0/site/pull/10"],
             ["Версия релиза", "0.3.1"],
             ["Дата проверки", "10 июня 2026 года"],
         ],
@@ -191,9 +193,8 @@ def create_support_report():
     add_paragraph(
         document,
         "Workflow .github/workflows/ci.yml запускается на push и pull_request. "
-        "Он использует Node.js 22, выполняет npm ci и npm run check. Локальная "
-        "конфигурация подготовлена; успешный GitHub Actions run фиксируется после "
-        "push ветки и создания Pull Request."
+        "Он использует Node.js 22, выполняет npm ci и npm run check. GitHub "
+        "Actions для Pull Request #10 завершён со статусом success."
     )
 
     add_heading(document, "7. Релиз")
@@ -207,11 +208,10 @@ def create_support_report():
     add_heading(document, "8. Итог")
     add_paragraph(
         document,
-        "Причина инцидента найдена и устранена. Локальный интеграционный тест "
-        "подтверждает, что production origin разрешён, а посторонний origin не "
-        "получает CORS-доступ. Для завершения полного GitHub-цикла требуется "
-        "авторизовать GitHub CLI, создать Issue, push ветки, дождаться CI и "
-        "создать Pull Request и тег v0.3.1."
+        "Причина инцидента найдена и устранена. Создан Issue #9, исправление "
+        "выполнено в отдельной ветке и отправлено в Pull Request #10. Локальные "
+        "проверки и GitHub Actions прошли успешно. Тег v0.3.1 создаётся после "
+        "принятия Pull Request; для сдачи уже подготовлен release-архив."
     )
 
     add_heading(document, "9. Скриншоты")
@@ -283,8 +283,9 @@ npm run release:check
 
 ## 8. Итог
 
-Локальная проверка подтверждает исправление. GitHub Issue, Actions, PR и тег
-оформляются после авторизации GitHub CLI.
+Локальная проверка подтверждает исправление. Созданы GitHub Issue #9 и Pull
+Request #10. GitHub Actions CI завершён успешно. Тег создаётся после
+принятия Pull Request; локальный release-архив уже подготовлен.
 """,
     )
     write(

@@ -25,6 +25,12 @@ try {
         git status --short
     }
 
+    Save-CommandResult "02_issue_and_branch.txt" "git log -1 --oneline; GitHub Issue #9" {
+        git log -1 --oneline
+        "Issue: https://github.com/Desai0/site/issues/9"
+        "Branch: codex/support-fix-cors-policy"
+    }
+
     Save-CommandResult "03_bug_reproduced.txt" "git show bumaga:backend_scraper/index.js | Select-String 'access-control-allow-origin'" {
         git show bumaga:backend_scraper/index.js |
             Select-String -Pattern "access-control-allow-origin"
@@ -40,6 +46,10 @@ try {
         npm run test:security
     }
 
+    Save-CommandResult "05_fix_commit.txt" "git show --stat --oneline --summary HEAD" {
+        git show --stat --oneline --summary HEAD
+    }
+
     Save-CommandResult "07_release_check.txt" "npm run release:check" {
         npm run release:check
     }
@@ -47,6 +57,13 @@ try {
     Save-CommandResult "09_release_documents.txt" "Get-Content CHANGELOG.md; Get-Content RELEASE_NOTES.md" {
         Get-Content CHANGELOG.md
         Get-Content RELEASE_NOTES.md
+    }
+
+    Save-CommandResult "08_pull_request_and_ci.txt" "GitHub PR #10; Actions run #27283032917" {
+        "Pull Request: https://github.com/Desai0/site/pull/10"
+        "Actions run: https://github.com/Desai0/site/actions/runs/27283032917"
+        "Status: completed"
+        "Conclusion: success"
     }
 
     Save-CommandResult "10_release_archive.txt" "Get-Item release/site-0.3.1.zip | Select-Object Name,Length,LastWriteTime" {
