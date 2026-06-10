@@ -335,7 +335,7 @@ API заявок возвращает `Access-Control-Allow-Origin: *`. Стор
 
 # Связанный issue
 
-Closes #ISSUE_NUMBER
+Closes #9
 
 # Как проверено
 
