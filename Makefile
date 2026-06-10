@@ -1,4 +1,4 @@
-.PHONY: setup run check format docker-build docker-up docker-down logs clean
+.PHONY: setup run check test build release-check format docker-build docker-up docker-down logs clean
 
 setup:
 	npm install
@@ -7,9 +7,16 @@ run:
 	npm run dev -- --host 0.0.0.0
 
 check:
+	npm run check
+
+test:
+	npm run test:security
+
+build:
 	npm run build
-	node --check backend_scraper/index.js
-	node --check backend_scraper/playwright_worker.js
+
+release-check:
+	npm run release:check
 
 format:
 	npx prettier --write "**/*.{html,css,js,ts,md,json}"

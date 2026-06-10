@@ -21,6 +21,7 @@ services:
       HOST: 0.0.0.0
       PORT: 18080
       TRACK_STORE_PATH: /app/data/tracks.json
+      CORS_ORIGINS: ${CORS_ORIGINS:-https://desaichk.com}
     ports:
       - "18080:18080"
     volumes:
