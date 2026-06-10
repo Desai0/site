@@ -1,5 +1,6 @@
 node_modules/
 dist/
+release/
 .spacetimedb-data/
 spacetimedb/spacetimedb/node_modules/
 backend_scraper/data/

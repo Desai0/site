@@ -7,6 +7,10 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const HOST = process.env.HOST || '0.0.0.0';
 const PORT = Number(process.env.PORT || 8080);
 const STORE_PATH = process.env.TRACK_STORE_PATH || join(__dirname, 'data', 'tracks.json');
+const CORS_ORIGINS = parseCorsOrigins(
+  process.env.CORS_ORIGINS ||
+    'https://desaichk.com,http://localhost:5173,http://127.0.0.1:5173'
+);
 const MAX_BODY_BYTES = 64 * 1024;
 const REQUEST_TIMEOUT_MS = 12000;
 const USER_AGENT =
@@ -16,7 +20,7 @@ const USER_AGENT =
 const server = createServer(async (req, res) => {
   const startedAt = Date.now();
   try {
-    setCorsHeaders(res);
+    setCorsHeaders(req, res);
 
     if (req.method === 'OPTIONS') {
       sendJson(res, 204, null);
@@ -258,10 +262,23 @@ function sendJson(res, statusCode, payload) {
   res.end(JSON.stringify(payload));
 }
 
-function setCorsHeaders(res) {
-  res.setHeader('access-control-allow-origin', '*');
+function setCorsHeaders(req, res) {
+  const origin = cleanString(req.headers.origin);
+  if (origin && CORS_ORIGINS.has(origin)) {
+    res.setHeader('access-control-allow-origin', origin);
+    res.setHeader('vary', 'Origin');
+  }
   res.setHeader('access-control-allow-methods', 'GET,POST,OPTIONS');
   res.setHeader('access-control-allow-headers', 'content-type');
+}
+
+function parseCorsOrigins(value) {
+  return new Set(
+    value
+      .split(',')
+      .map((origin) => origin.trim())
+      .filter(Boolean)
+  );
 }
 
 function cleanString(value) {

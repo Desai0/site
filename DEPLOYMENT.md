@@ -32,6 +32,14 @@ cp .env.demo.example .env.demo
 
 Настоящие секреты и production-токены не публикуются.
 
+Backend принимает список разрешённых источников через:
+
+```env
+CORS_ORIGINS=https://desaichk.com
+```
+
+Несколько адресов указываются через запятую без пробелов.
+
 ## 4. Команды развертывания
 
 ```bash
@@ -47,6 +55,13 @@ docker compose -f docker-compose.prod.yml up --build -d
 docker compose -f docker-compose.prod.yml ps
 docker compose -f docker-compose.prod.yml logs --tail=80
 curl http://127.0.0.1:18080/health
+```
+
+Проверка CORS и release-сценария:
+
+```bash
+npm run test:security
+npm run release:check
 ```
 
 Открыть:

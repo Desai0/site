@@ -6,6 +6,10 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build && node scripts/postbuild.mjs",
+    "check:backend": "node --check backend_scraper/index.js && node --check backend_scraper/playwright_worker.js && node --check backend_scraper/security_test.js",
+    "test:security": "node backend_scraper/security_test.js",
+    "check": "npm run check:backend && npm run test:security && npm run build",
+    "release:check": "npm run check",
     "preview": "vite preview",
     "spacetime:generate": "spacetime generate --lang typescript --out-dir src/module_bindings --module-path spacetimedb/spacetimedb",
     "spacetime:publish:local": "spacetime publish site-cursors --module-path spacetimedb/spacetimedb --server local",

@@ -3,7 +3,7 @@ chcp 65001 > nul
 cd /d "%~dp0\.."
 
 echo ========================================
-echo  Support tests
+echo  Build release version
 echo ========================================
 
-npm run check
+npm run build

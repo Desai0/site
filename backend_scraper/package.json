@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "start": "node index.js",
-    "check": "node --check index.js && node --check playwright_worker.js"
+    "check": "node --check index.js && node --check playwright_worker.js && node --check security_test.js",
+    "test": "node security_test.js"
   },
   "engines": {
     "node": ">=20"
