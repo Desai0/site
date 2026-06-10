@@ -86,6 +86,17 @@ npm run build
 
 Готовая статика будет в `dist/`.
 
+## Проверка качества и релиза
+
+```bash
+npm run check
+npm run test:security
+npm run release:check
+```
+
+На Windows доступны `scripts\test.bat`, `scripts\build.bat`,
+`scripts\release-check.bat` и `scripts\create-release.bat`.
+
 ## SpaceTimeDB Maincloud
 
 Публикация модуля в Maincloud:
